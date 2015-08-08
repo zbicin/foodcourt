@@ -34,8 +34,8 @@ namespace FoodCourt.Controllers.Base
                     try
                     {
 
-                        _currentUser =
-                            UnitOfWork.UserAccountRepository.GetAll().Single(u => u.Id == currentUserId);
+                        _currentUser = 
+                            UnitOfWork.UserAccountRepository.GetAll(false, "Group").Single(u => u.Id == currentUserId);
                         UnitOfWork.SetCurrentUser(_currentUser);
                     }
                     catch (InvalidOperationException exception)
@@ -67,7 +67,10 @@ namespace FoodCourt.Controllers.Base
                 if (_uow == null)
                 {
                     _uow = new UnitOfWork(new ApplicationDbContext());
-                    _uow.SetCurrentUser(CurrentUser);
+                    if (!_disposing)
+                    {
+                        _uow.SetCurrentUser(CurrentUser);
+                    }
                 }
 
                 return _uow;
@@ -75,9 +78,11 @@ namespace FoodCourt.Controllers.Base
         }
 
         private bool _disposed = false;
+        private bool _disposing = false;
 
         protected override void Dispose(bool disposing)
         {
+            _disposing = disposing;
             if (!this._disposed)
             {
                 if (disposing)

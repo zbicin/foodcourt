@@ -10,11 +10,13 @@ using FoodCourt.ViewModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using FoodCourt.Controllers.Base;
+using System.Collections.Generic;
 
 namespace FoodCourt.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -80,7 +82,7 @@ namespace FoodCourt.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("Index", "Order");
+                    return RedirectToAction("Index", "Poll");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -142,7 +144,7 @@ namespace FoodCourt.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Order");
+                return RedirectToAction("Index", "Poll");
             }
             return View();
         }
@@ -162,15 +164,32 @@ namespace FoodCourt.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
-                    // TODO: send invitations
-                    // TODO: create group
-                    return RedirectToAction("ChangePassword", "Manage");
+                    TempData["RegisterViewModel"] = model;
+                    return RedirectToAction("PostRegister", "Account");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public async Task<ActionResult> PostRegister()
+        {
+            var model = TempData["RegisterViewModel"] as RegisterViewModel;
+
+            // TODO: create guest accounts
+            // TODO: send invitations             
+            var guests = new List<ApplicationUser>();
+
+            var userEntity = await UnitOfWork.UserAccountRepository.FindByEmailAsync(model.AdminEmail);
+
+            var newGroup = new Model.Group(model.GroupName, guests);
+            newGroup.ApplicationUsers.Add(userEntity);
+
+            await UnitOfWork.GroupRepository.Insert(newGroup);
+
+            return RedirectToAction("ChangePassword", "Manage");
         }
 
         //

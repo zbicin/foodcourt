@@ -5,4 +5,5 @@
         console.log(error);
         alert('Something went terribly wrong. See console for details.');
     });
+
 }]);

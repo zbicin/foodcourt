@@ -237,7 +237,7 @@ namespace FoodCourt.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", "Order");
+                return RedirectToAction("Index", "Poll");
             }
             AddErrors(result);
             return View(model);

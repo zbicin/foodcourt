@@ -109,13 +109,28 @@ namespace FoodCourt.Service.Repository
             return entity;
         }
 
-        public IQueryable<ApplicationUser> GetAll(bool withDeleted = false)
+        protected IQueryable<ApplicationUser> ResolveIncludes(string include, IQueryable<ApplicationUser> query)
+        {
+            if (string.IsNullOrEmpty(include) == false)
+            {
+                var includes = include.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string includeProperty in includes)
+                {
+                    query = query.Include(includeProperty.Trim());
+                }
+            }
+            return query;
+        }
+        public IQueryable<ApplicationUser> GetAll(bool withDeleted = false, string includes = "")
         {
             IQueryable<ApplicationUser> set = DbSet;
             if (withDeleted == false)
             {
                 set = set.Where(o => o.IsDeleted == false);
             }
+
+            set = ResolveIncludes(includes, set);
 
             return set;
         }
