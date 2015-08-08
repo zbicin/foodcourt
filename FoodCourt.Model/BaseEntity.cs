@@ -20,7 +20,7 @@ namespace FoodCourt.Model
         [Required]
         [Index]
         public DateTime CreatedAt { get; set; }
-        [Required]
+        //[Required]
         public ApplicationUser CreatedBy { get; set; }
 
         [Index]

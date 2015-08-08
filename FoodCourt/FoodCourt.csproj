@@ -171,6 +171,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="ViewModel\MatchedOrderViewModel.cs" />
     <Compile Include="ViewModel\CreateOrderViewModel.cs" />
     <Compile Include="Controllers\DishController.cs" />
     <Compile Include="ViewModel\DishViewModel.cs" />
@@ -1050,6 +1051,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\app\Controllers\" />
+    <Folder Include="Scripts\app\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
