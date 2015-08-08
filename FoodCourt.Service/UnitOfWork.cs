@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
@@ -42,25 +43,25 @@ namespace FoodCourt.Service
         private IBaseRepository<Dish> _dishRepository;
         public IDishRepository DishRepository
         {
-            get { return (IDishRepository) (_dishRepository ?? (_dishRepository = new BaseRepository<Dish>(this, CurrentUser))); }
+            get { return (IDishRepository)(_dishRepository ?? (_dishRepository = new BaseRepository<Dish>(this, CurrentUser))); }
         }
 
         private IBaseRepository<Group> _groupRepository;
         public IGroupRepository GroupRepository
         {
-            get { return (IGroupRepository) (_groupRepository ?? (_groupRepository = new BaseRepository<Group>(this, CurrentUser))); }
+            get { return (IGroupRepository)(_groupRepository ?? (_groupRepository = new BaseRepository<Group>(this, CurrentUser))); }
         }
 
         private IBaseRepository<Kind> _kindRepository;
         public IKindRepository KindRepository
         {
-            get { return (IKindRepository) (_kindRepository ?? (_kindRepository = new BaseRepository<Kind>(this, CurrentUser))); }
+            get { return (IKindRepository)(_kindRepository ?? (_kindRepository = new KindRepository(this, CurrentUser))); }
         }
 
         private IBaseRepository<Order> _orderRepository;
         public IOrderRepository OrderRepository
         {
-            get { return (IOrderRepository) (_orderRepository ?? (_orderRepository = new BaseRepository<Order>(this, CurrentUser))); }
+            get { return (IOrderRepository)(_orderRepository ?? (_orderRepository = new BaseRepository<Order>(this, CurrentUser))); }
         }
 
         private IPollRepository _pollRepository;
@@ -96,5 +97,20 @@ namespace FoodCourt.Service
             GC.SuppressFinalize(this);
         }
         #endregion
+    }
+
+    public class KindRepository : BaseRepository<Kind>, IKindRepository
+    {
+        public KindRepository(UnitOfWork unitOfWork, IApplicationUser currentUser)
+            : base(unitOfWork, currentUser)
+        {
+        }
+
+        public IQueryable<Kind> Search(string searchPhrase, string includes = "")
+        {
+            return
+                this.GetAll(false, includes)
+                    .Where(k => k.Name.Contains(searchPhrase));
+        }
     }
 }

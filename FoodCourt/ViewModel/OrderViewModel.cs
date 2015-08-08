@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FoodCourt.Controllers
+namespace FoodCourt.ViewModel
 {
     public class OrderViewModel
     {

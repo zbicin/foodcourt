@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FoodCourt.Controllers.Base;
 using FoodCourt.Model;
-using FoodCourt.Models;
 using FoodCourt.Service;
+using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
 {

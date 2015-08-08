@@ -1,6 +1,6 @@
 using System;
 
-namespace FoodCourt.Models
+namespace FoodCourt.ViewModel
 {
     public class RestaurantViewModel
     {

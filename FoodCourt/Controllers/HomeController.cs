@@ -1,5 +1,4 @@
 ﻿using FoodCourt.Model.Identity;
-using FoodCourt.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
+using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
 {

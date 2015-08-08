@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FoodCourt.Controllers.Base;
 using FoodCourt.Model;
+using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
 {

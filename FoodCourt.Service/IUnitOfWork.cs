@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
 using FoodCourt.Service.Repository;
@@ -30,6 +31,7 @@ namespace FoodCourt.Service
 
     public interface IKindRepository : IBaseRepository<Kind>
     {
+        IQueryable<Kind> Search(string searchPhrase, string includes = "");
     }
 
     public interface IOrderRepository : IBaseRepository<Order>
