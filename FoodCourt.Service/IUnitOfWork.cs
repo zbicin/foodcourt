@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
 using FoodCourt.Service.Repository;
@@ -10,13 +11,30 @@ namespace FoodCourt.Service
         ApplicationDbContext Db { get; }
         IApplicationUser CurrentUser { get; }
         IApplicationUserRepository UserAccountRepository { get; }
-        IBaseRepository<Dish> DishRepository { get; }
-        IBaseRepository<Group> GroupRepository { get; }
-        IBaseRepository<Kind> KindRepository { get; }
-        IBaseRepository<Order> OrderRepository { get; }
+        IDishRepository DishRepository { get; }
+        IGroupRepository GroupRepository { get; }
+        IKindRepository KindRepository { get; }
+        IOrderRepository OrderRepository { get; }
         IPollRepository PollRepository { get; }
-        IBaseRepository<Restaurant> RestaurantRepository { get; }
+        IRestaurantRepository RestaurantRepository { get; }
         void SetCurrentUser(IApplicationUser currentUser);
         void Dispose();
+    }
+
+    public interface IDishRepository : IBaseRepository<Dish>
+    {
+    }
+
+    public interface IGroupRepository : IBaseRepository<Group>
+    {
+    }
+
+    public interface IKindRepository : IBaseRepository<Kind>
+    {
+        IQueryable<Kind> Search(string searchPhrase, string includes = "");
+    }
+
+    public interface IOrderRepository : IBaseRepository<Order>
+    {
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FoodCourt.Controllers
+namespace FoodCourt.ViewModel
 {
     public class PollViewModel
     {
