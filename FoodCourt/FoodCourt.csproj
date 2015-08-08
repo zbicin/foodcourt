@@ -171,6 +171,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Lib\AuthorizeRedirectToRegisterAttribute.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Controllers\PollController.cs" />
     <Compile Include="Models\PollViewModel.cs" />
