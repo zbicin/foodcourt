@@ -73,10 +73,10 @@ namespace FoodCourt.Controllers
                     RestaurantId = o.Dish.Restaurant.Id,
                     Restaurant = o.Dish.Restaurant.Name,
 
-                    IsOptional = o.IsOptional,
+                    //IsOptional = o.IsOptional,
                     IsHelpNeeded = o.IsHelpNeeded,
 
-                    UserEmail = o.User.Email
+                    UserEmail = o.CreatedBy.Email
                 }),
 
                 ETA = p.ETA,

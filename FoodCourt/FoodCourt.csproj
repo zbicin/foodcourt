@@ -171,6 +171,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="ViewModel\MatchedOrderViewModel.cs" />
     <Compile Include="ViewModel\CreateOrderViewModel.cs" />
     <Compile Include="Controllers\DishController.cs" />
     <Compile Include="ViewModel\DishViewModel.cs" />
@@ -1043,13 +1044,14 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Poll\Index.cshtml" />
-    <Content Include="Views\Order\_Form.cshtml" />
-    <Content Include="Views\Order\_Preview.cshtml" />
+    <Content Include="Views\Poll\_Form.cshtml" />
+    <Content Include="Views\Poll\_Preview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\app\Controllers\" />
     <Folder Include="Scripts\app\Services\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

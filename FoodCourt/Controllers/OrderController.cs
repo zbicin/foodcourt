@@ -23,27 +23,12 @@ namespace FoodCourt.Controllers
         public async Task<IHttpActionResult> GetListForPoll(Guid pollId)
         {
             var query = UnitOfWork.OrderRepository.GetForPoll(pollId);
-            var viewModelQuery = query.Select(o => new OrderViewModel()
-            {
-                DishId = o.Dish.Id,
-                Dish = o.Dish.Name,
+            List<Order> orders = query.ToList();
 
-                KindId = o.Dish.Kind.Id,
-                Kind = o.Dish.Kind.Name,
 
-                RestaurantId = o.Dish.Restaurant.Id,
-                Restaurant = o.Dish.Restaurant.Name,
-
-                IsOptional = o.IsOptional,
-                IsHelpNeeded = o.IsHelpNeeded,
-
-                UserEmail = o.User.Email
-            });
-
-            var viewModelList = await viewModelQuery.ToListAsync();
-
-            return Ok(viewModelList);
+            return Ok(new List<Order>());
         }
+
 
         public async Task<IHttpActionResult> Put(CreateOrderViewModel order)
         {
@@ -62,9 +47,8 @@ namespace FoodCourt.Controllers
             Order newOrder = new Order()
             {
                 Dish = dish,
-                IsOptional = order.IsOptional,
+                //IsOptional = order.IsOptional,
                 IsHelpNeeded = order.IsHelpNeeded,
-                User = (ApplicationUser) CurrentUser,
                 Poll = currentPoll
             };
 
@@ -81,10 +65,10 @@ namespace FoodCourt.Controllers
                 RestaurantId = newOrder.Dish.Restaurant.Id,
                 Restaurant = newOrder.Dish.Restaurant.Name,
 
-                IsOptional = newOrder.IsOptional,
+                //IsOptional = newOrder.IsOptional,
                 IsHelpNeeded = newOrder.IsHelpNeeded,
 
-                UserEmail = newOrder.User.Email
+                UserEmail = newOrder.CreatedBy.Email
             });
         }
     }
