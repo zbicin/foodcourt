@@ -24,6 +24,7 @@ namespace FoodCourt.Service
 
     public interface IDishRepository : IBaseRepository<Dish>
     {
+        IQueryable<Dish> Search(string searchPhrase, string includes = "");
     }
 
     public interface IGroupRepository : IBaseRepository<Group>
