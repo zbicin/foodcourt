@@ -228,7 +228,8 @@ namespace FoodCourt.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(new Guid(User.Identity.GetUserId()), model.OldPassword, model.NewPassword);
+            var result = await UserManager.ChangePasswordAsync(new Guid(User.Identity.GetUserId()), "password", model.NewPassword);
+            
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(new Guid(User.Identity.GetUserId()));
@@ -236,7 +237,7 @@ namespace FoodCourt.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                return RedirectToAction("Index", "Order");
             }
             AddErrors(result);
             return View(model);
