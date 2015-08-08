@@ -237,6 +237,8 @@
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\App.js" />
+    <Content Include="Scripts\app\Controllers\PollController.js" />
+    <Content Include="Scripts\app\Services\PollService.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\errors.json" />
@@ -1051,7 +1053,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\app\Controllers\" />
     <Folder Include="Scripts\app\Services\" />
-    <Folder Include="Views\Order\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -51,9 +51,9 @@ namespace FoodCourt.Service
         }
 
         private IBaseRepository<Group> _groupRepository;
-        public IGroupRepository GroupRepository
+        public IBaseRepository<Group> GroupRepository
         {
-            get { return (IGroupRepository)(_groupRepository ?? (_groupRepository = new BaseRepository<Group>(this, CurrentUser))); }
+            get { return (_groupRepository ?? (_groupRepository = new BaseRepository<Group>(this, CurrentUser))); }
         }
 
         private IKindRepository _kindRepository;

@@ -18,7 +18,7 @@ namespace FoodCourt.Service.Repository
         bool AutoSaveChanges { get; set; }
         IQueryable<ApplicationUser> Users { get; }
         Task<ApplicationUser> Single(object primaryKey, bool withDeleted = false);
-        IQueryable<ApplicationUser> GetAll(bool withDeleted = false);
+        IQueryable<ApplicationUser> GetAll(bool withDeleted = false, string includes = "");
         Task<bool> Exists(object primaryKey, bool withDeleted = false);
         Task<int> Insert(ApplicationUser entity);
         Task<int> Update(ApplicationUser entity);

@@ -12,7 +12,7 @@ namespace FoodCourt.Service
         IApplicationUser CurrentUser { get; }
         IApplicationUserRepository UserAccountRepository { get; }
         IDishRepository DishRepository { get; }
-        IGroupRepository GroupRepository { get; }
+        IBaseRepository<Group> GroupRepository { get; }
         IKindRepository KindRepository { get; }
         IOrderRepository OrderRepository { get; }
         IPollRepository PollRepository { get; }
