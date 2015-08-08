@@ -14,6 +14,11 @@ namespace FoodCourt.Controllers
 {
     public class KindController : BaseApiController
     {
+        public async Task<IHttpActionResult> GetList()
+        {
+            return await Search("");
+        }
+
         public async Task<IHttpActionResult> Search(string searchPhrase)
         {
             var query = UnitOfWork.KindRepository.Search(searchPhrase);

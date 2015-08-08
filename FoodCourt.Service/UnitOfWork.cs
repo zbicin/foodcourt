@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
@@ -45,10 +44,10 @@ namespace FoodCourt.Service
                 return _applicationUserRepository;
             }
         }
-        private IBaseRepository<Dish> _dishRepository;
+        private IDishRepository _dishRepository;
         public IDishRepository DishRepository
         {
-            get { return (IDishRepository)(_dishRepository ?? (_dishRepository = new DishRepository(this, CurrentUser))); }
+            get { return (_dishRepository ?? (_dishRepository = new DishRepository(this, CurrentUser))); }
         }
 
         private IBaseRepository<Group> _groupRepository;
@@ -57,10 +56,10 @@ namespace FoodCourt.Service
             get { return (IGroupRepository)(_groupRepository ?? (_groupRepository = new BaseRepository<Group>(this, CurrentUser))); }
         }
 
-        private IBaseRepository<Kind> _kindRepository;
+        private IKindRepository _kindRepository;
         public IKindRepository KindRepository
         {
-            get { return (IKindRepository)(_kindRepository ?? (_kindRepository = new KindRepository(this, CurrentUser))); }
+            get { return (_kindRepository ?? (_kindRepository = new KindRepository(this, CurrentUser))); }
         }
 
         private IBaseRepository<Order> _orderRepository;
@@ -102,34 +101,5 @@ namespace FoodCourt.Service
             GC.SuppressFinalize(this);
         }
         #endregion
-    }
-
-    public class DishRepository : BaseRepository<Dish>, IDishRepository
-    {
-        public DishRepository(IUnitOfWork unitOfWork, IApplicationUser currentUser) : base(unitOfWork, currentUser)
-        {
-        }
-
-        public IQueryable<Dish> Search(string searchPhrase, string includes = "")
-        {
-            return
-                this.GetAll(false, includes)
-                    .Where(k => k.Name.Contains(searchPhrase));
-        }
-    }
-
-    public class KindRepository : BaseRepository<Kind>, IKindRepository
-    {
-        public KindRepository(UnitOfWork unitOfWork, IApplicationUser currentUser)
-            : base(unitOfWork, currentUser)
-        {
-        }
-
-        public IQueryable<Kind> Search(string searchPhrase, string includes = "")
-        {
-            return
-                this.GetAll(false, includes)
-                    .Where(k => k.Name.Contains(searchPhrase));
-        }
     }
 }

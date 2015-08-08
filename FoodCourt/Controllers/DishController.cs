@@ -17,6 +17,7 @@ namespace FoodCourt.Controllers
         {
             return await Search("", kindId, restaurantId);
         }
+
         public async Task<IHttpActionResult> Search(string searchPhrase, Guid kindId, Guid restaurantId)
         {
             if (kindId.ToString() == string.Empty)
