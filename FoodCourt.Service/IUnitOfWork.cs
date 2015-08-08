@@ -19,6 +19,7 @@ namespace FoodCourt.Service
         IRestaurantRepository RestaurantRepository { get; }
         void SetCurrentUser(IApplicationUser currentUser);
         void Dispose();
+        void Attach<T>(T entity) where T : BaseEntity;
     }
 
     public interface IDishRepository : IBaseRepository<Dish>
