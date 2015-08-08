@@ -27,6 +27,11 @@ namespace FoodCourt.Service
             CurrentUser = currentUser;
         }
 
+        public void Attach<T>(T entity) where T : BaseEntity
+        {
+            Db.Set<T>().Attach(entity);
+        }
+
         #region Repositories
         private IApplicationUserRepository _applicationUserRepository;
         public IApplicationUserRepository UserAccountRepository
