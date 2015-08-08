@@ -2,5 +2,12 @@
     ViewBag.Title = "Poll";
 }
 
-<h2>Index</h2>
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        @Html.Partial("_Form")
+    </div>
+    <div class="col-xs-12 col-md-6">
+        @Html.Partial("_Preview")
+    </div>
+</div>
 
