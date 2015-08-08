@@ -38,5 +38,7 @@ namespace FoodCourt.Service
 
     public interface IOrderRepository : IBaseRepository<Order>
     {
+        IQueryable<Order> GetForPoll(Poll poll);
+        IQueryable<Order> GetForPoll(Guid pollId);
     }
 }
