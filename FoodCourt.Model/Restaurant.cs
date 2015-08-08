@@ -1,0 +1,11 @@
+namespace FoodCourt.Model
+{
+    public class Restaurant : BaseEntity
+    {
+        public string Name { get; set; }
+        public string PhoneNumber { get; set; }
+
+        // will it be really useful here?
+        //public Kind Kind { get; set; }
+    }
+}

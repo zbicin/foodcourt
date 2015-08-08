@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using FoodCourt.Model.Identity;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -181,7 +182,7 @@ namespace FoodCourt.Controllers
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            var result = await UserManager.ConfirmEmailAsync(new Guid(userId), code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
