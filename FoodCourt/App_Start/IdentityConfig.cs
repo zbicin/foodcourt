@@ -12,6 +12,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
+using System.Text;
 
 namespace FoodCourt
 {
@@ -39,6 +40,12 @@ namespace FoodCourt
         public ApplicationUserManager(IUserStore<ApplicationUser, Guid> store)
             : base(store)
         {
+        }
+
+        public Task<IdentityResult> CreateAsync(ApplicationUser user)
+        {
+            // TODO: randomize password
+            return base.CreateAsync(user, "password");
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
@@ -87,6 +94,7 @@ namespace FoodCourt
             }
             return manager;
         }
+
     }
 
     // Configure the application sign-in manager which is used in this application.
