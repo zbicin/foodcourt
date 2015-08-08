@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repository\DishRepository.cs" />
+    <Compile Include="Repository\KindRepository.cs" />
     <Compile Include="Repository\IRestaurantRepository.cs" />
     <Compile Include="Repository\IPollRepository.cs" />
     <Compile Include="Repository\PollRepository.cs" />

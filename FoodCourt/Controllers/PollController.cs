@@ -5,20 +5,30 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using FoodCourt.Controllers.Base;
+using FoodCourt.Lib;
 using FoodCourt.Model;
 using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
 {
-    public class PollController : BaseApiController
+    [AuthorizeRedirectToRegister]
+    public class PollController : BaseController
     {
+
+        // GET: Order
+        public ActionResult Index()
+        {
+            return View();
+        }
 
         /// <summary>
         /// Tries to get current active poll based on current user's group.
         /// </summary>
         /// <returns></returns>
-        public async Task<IHttpActionResult> TryGetCurrentPoll()
+        public async Task<JsonResult> TryGetCurrentPoll()
         {
             var viewModelQuery = GetViewModelQuery(UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders.Dish.Kind, Orders.Dish.Restaurant"));
             PollViewModel currentPollViewModel = await viewModelQuery.FirstOrDefaultAsync();
@@ -30,6 +40,7 @@ namespace FoodCourt.Controllers
                 {
                     Group = CurrentGroup
                 };
+
                 await UnitOfWork.PollRepository.Insert(newPoll);
 
                 // only if there is no active poll at this point of time
@@ -41,7 +52,7 @@ namespace FoodCourt.Controllers
                 };
             }
 
-            return Ok(currentPollViewModel);
+            return Json(currentPollViewModel, JsonRequestBehavior.AllowGet);
         }
 
         private IQueryable<PollViewModel> GetViewModelQuery(IQueryable<Poll> query)
@@ -63,7 +74,9 @@ namespace FoodCourt.Controllers
                     Restaurant = o.Dish.Restaurant.Name,
 
                     IsOptional = o.IsOptional,
-                    IsHelpNeeded = o.IsHelpNeeded
+                    IsHelpNeeded = o.IsHelpNeeded,
+
+                    UserEmail = o.User.Email
                 }),
 
                 ETA = p.ETA,

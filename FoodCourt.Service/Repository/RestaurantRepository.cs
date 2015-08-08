@@ -12,6 +12,11 @@ namespace FoodCourt.Service.Repository
 
         public IQueryable<Restaurant> Search(string searchPhrase, string includes = "")
         {
+            if (string.IsNullOrWhiteSpace(searchPhrase))
+            {
+                return GetAll(false, includes);
+            }
+
             return
                 this.GetAll(false, includes)
                     .Where(r => r.Name.Contains(searchPhrase) || r.PhoneNumber.Contains(searchPhrase));

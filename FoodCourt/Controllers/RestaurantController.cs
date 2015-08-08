@@ -15,6 +15,11 @@ namespace FoodCourt.Controllers
 {
     public class RestaurantController : BaseApiController
     {
+        public async Task<IHttpActionResult> GetList()
+        {
+            return await Search("");
+        }
+
         public async Task<IHttpActionResult> Search(string searchPhrase)
         {
             var query = UnitOfWork.RestaurantRepository.Search(searchPhrase);

@@ -21,6 +21,14 @@ namespace FoodCourt.Model
             return new ApplicationDbContext();
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Poll>().HasMany(p => p.Orders).WithRequired(o => o.Poll).WillCascadeOnDelete(false);
+
+        }
+
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Kind> Kinds { get; set; }
