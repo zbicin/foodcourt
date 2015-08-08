@@ -1,41 +1,51 @@
 ﻿@model FoodCourt.ViewModel.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Food Court";
 }
 
-<h2>@ViewBag.Title.</h2>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
+<div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 text-center">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Create a new account.</h4>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.AdminEmail, new { @class = "form-control", placeholder = "Your email" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.GuestsEmails, new { @class = "form-control", placeholder = "Emails of people to invite" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.GroupName, new { @class = "form-control", placeholder = "Group name" })
+            </div>
+            <p>
+                <button type="submit" class="btn btn-success btn-lg">
+                    Create
+                </button>
+            </p>
+            <p>
+                or
+                <a href="@Url.Action("LogIn", "Account")">log in to an existing poll</a>.
+            </p>
+            <p><a href="#" id="debug">Debug</a></p>
+        }
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('#debug').click(function (e) {
+                e.preventDefault();
+                var randomPart = Math.floor((Math.random() * 100000000) + 1);
+                $('input[type=text]:eq(0)').val('user' + randomPart + '@@example.dummytld');
+                $('input[type=text]:eq(1)').val('guest@@example.dummytld');
+                $('input[type=text]:eq(2)').val('group ' + randomPart);
+            });
+        });
+    </script>
 }

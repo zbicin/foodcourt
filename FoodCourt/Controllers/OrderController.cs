@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using FoodCourt.Lib;
 
 namespace FoodCourt.Controllers
 {
+    [AuthorizeRedirectToRegister]
     public class OrderController : Controller
     {
         private ApplicationUserManager _userManager;

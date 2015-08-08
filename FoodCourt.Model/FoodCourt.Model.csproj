@@ -60,6 +60,7 @@
     <Compile Include="ApplicationDbContext.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Dish.cs" />
+    <Compile Include="FoodCourtInitializer.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="IBaseEntity.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
