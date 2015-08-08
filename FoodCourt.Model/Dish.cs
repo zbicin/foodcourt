@@ -4,5 +4,6 @@ namespace FoodCourt.Model
     {
         public string Name { get; set; }
         public Kind Kind { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 }

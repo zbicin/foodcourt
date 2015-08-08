@@ -169,9 +169,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Models\OrderViewModel.cs" />
+    <Compile Include="Controllers\PollController.cs" />
+    <Compile Include="Models\PollViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -224,7 +227,7 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
-    <Content Include="Scripts\app\App.js" />
+    <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\errors.json" />
@@ -1034,14 +1037,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\version.json" />
-    <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\Order\_Form.cshtml" />
-    <Content Include="Views\Order\_Preview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\app\Controllers\" />
-    <Folder Include="Scripts\app\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1054,6 +1052,10 @@
     <ProjectReference Include="..\FoodCourt.Model\FoodCourt.Model.csproj">
       <Project>{9556c9ab-8573-482f-8f05-1d68fd440910}</Project>
       <Name>FoodCourt.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FoodCourt.Service\FoodCourt.Service.csproj">
+      <Project>{4c10f0e9-fe42-42eb-8969-ac7f91d181ed}</Project>
+      <Name>FoodCourt.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

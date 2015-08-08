@@ -31,9 +31,16 @@ namespace FoodCourt.Model.Identity
             return userIdentity;
         }
 
-        public bool IsSystemUser
+        public DateTime? LastOrderDate
         {
-            get { return UserName == "SYSTEM"; }
+            get;
+            set;
+        }
+
+        public Group Group
+        {
+            get;
+            set;
         }
 
         public DateTime CreatedAt { get; set; }
