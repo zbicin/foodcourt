@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace FoodCourt.Model
+namespace FoodCourt.Controllers
 {
-    public class Poll : BaseEntity
+    public class PollViewModel
     {
-        public Group Group { get; set; }
+        public string Group { get; set; }
+
         public string Remarks { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public IEnumerable<OrderViewModel> Orders { get; set; }
 
         public DateTime? ETA { get; set; }
 
@@ -15,11 +16,5 @@ namespace FoodCourt.Model
         public DateTime? FinishedAt { get; set; }
 
         public bool IsResolved { get; set; }
-
-        public Poll()
-        {
-            IsFinished = false;
-            IsResolved = false;
-        }
     }
 }

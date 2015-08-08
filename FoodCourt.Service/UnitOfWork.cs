@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
@@ -28,6 +27,18 @@ namespace FoodCourt.Service
         }
 
         #region Repositories
+        private IApplicationUserRepository _applicationUserRepository;
+        public IApplicationUserRepository UserAccountRepository
+        {
+            get
+            {
+                if (_applicationUserRepository == null)
+                {
+                    _applicationUserRepository = new ApplicationUserRepository(this);
+                }
+                return _applicationUserRepository;
+            }
+        }
         private IBaseRepository<Dish> _dishRepository;
         public IBaseRepository<Dish> DishRepository
         {
@@ -52,10 +63,10 @@ namespace FoodCourt.Service
             get { return _orderRepository ?? (_orderRepository = new BaseRepository<Order>(this, CurrentUser)); }
         }
 
-        private IBaseRepository<Poll> _pollRepository;
-        public IBaseRepository<Poll> PollRepository
+        private IPollRepository _pollRepository;
+        public IPollRepository PollRepository
         {
-            get { return _pollRepository ?? (_pollRepository = new BaseRepository<Poll>(this, CurrentUser)); }
+            get { return _pollRepository ?? (_pollRepository = new PollRepository(this, CurrentUser)); }
         }
 
         private IBaseRepository<Restaurant> _restaurantRepository;

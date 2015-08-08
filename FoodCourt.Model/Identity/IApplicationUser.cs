@@ -8,7 +8,6 @@ namespace FoodCourt.Model.Identity
     public interface IApplicationUser : IBaseEntity, IUser<Guid>//, IUser
     {
         new Guid Id { get; set; }
-        bool IsSystemUser { get; }
         string Email { get; set; }
         bool EmailConfirmed { get; set; }
         string PasswordHash { get; set; }
@@ -20,5 +19,8 @@ namespace FoodCourt.Model.Identity
         bool LockoutEnabled { get; set; }
         int AccessFailedCount { get; set; }
         Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, Guid> manager);
+
+        DateTime? LastOrderDate { get; set; }
+        Group Group { get; set; }
     }
 }

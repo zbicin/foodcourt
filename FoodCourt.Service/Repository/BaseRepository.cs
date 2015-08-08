@@ -42,7 +42,7 @@ namespace FoodCourt.Service.Repository
             DbSet = Database.Set<T>();
         }
 
-        private IQueryable<T> ResolveIncludes(string include, IQueryable<T> query)
+        protected IQueryable<T> ResolveIncludes(string include, IQueryable<T> query)
         {
             if (string.IsNullOrEmpty(include) == false)
             {

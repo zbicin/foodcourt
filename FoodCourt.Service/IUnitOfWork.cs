@@ -9,7 +9,14 @@ namespace FoodCourt.Service
     {
         ApplicationDbContext Db { get; }
         IApplicationUser CurrentUser { get; }
+        IApplicationUserRepository UserAccountRepository { get; }
+        IBaseRepository<Dish> DishRepository { get; }
+        IBaseRepository<Group> GroupRepository { get; }
+        IBaseRepository<Kind> KindRepository { get; }
         IBaseRepository<Order> OrderRepository { get; }
+        IPollRepository PollRepository { get; }
+        IBaseRepository<Restaurant> RestaurantRepository { get; }
         void SetCurrentUser(IApplicationUser currentUser);
+        void Dispose();
     }
 }

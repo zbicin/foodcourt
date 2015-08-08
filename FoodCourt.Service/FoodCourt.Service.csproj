@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FoodCourt.Service</RootNamespace>
     <AssemblyName>FoodCourt.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repository\IPollRepository.cs" />
+    <Compile Include="Repository\PollRepository.cs" />
+    <Compile Include="Repository\IApplicationUserRepository.cs" />
+    <Compile Include="Repository\ApplicationUserRepository.cs" />
     <Compile Include="Repository\BaseRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Repository\IBaseRepository.cs" />
