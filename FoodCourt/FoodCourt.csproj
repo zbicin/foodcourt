@@ -171,6 +171,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="ViewModel\MatchedOrderViewModel.cs" />
     <Compile Include="ViewModel\CreateOrderViewModel.cs" />
     <Compile Include="Controllers\DishController.cs" />
@@ -1048,11 +1049,10 @@
     <Content Include="Views\Poll\Index.cshtml" />
     <Content Include="Views\Poll\_Form.cshtml" />
     <Content Include="Views\Poll\_Preview.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\app\Controllers\" />
-    <Folder Include="Scripts\app\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
