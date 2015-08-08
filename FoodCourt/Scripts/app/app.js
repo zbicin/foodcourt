@@ -1,0 +1,1 @@
+﻿angular.module('foodCourtApp', ['ui.bootstrap']);
