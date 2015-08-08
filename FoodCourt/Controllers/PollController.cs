@@ -24,6 +24,13 @@ namespace FoodCourt.Controllers
 
             if (currentPollViewModel == null)
             {
+                // create new poll
+                Poll newPoll = new Poll()
+                {
+                    Group = CurrentGroup
+                };
+                await UnitOfWork.PollRepository.Insert(newPoll);
+
                 // only if there is no active poll at this point of time
                 currentPollViewModel = new PollViewModel
                 {
