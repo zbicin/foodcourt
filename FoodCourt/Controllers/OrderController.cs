@@ -14,17 +14,22 @@ using Microsoft.Owin.Security;
 using FoodCourt.Lib;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
+using FoodCourt.Service;
 using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
 {
     public class OrderController : BaseApiController
     {
+        [System.Web.Http.HttpGet]
         public async Task<IHttpActionResult> GetListForPoll(Guid pollId)
         {
             var query = UnitOfWork.OrderRepository.GetForPoll(pollId);
             List<Order> orders = query.ToList();
 
+            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+            matchHandler.ReduceAmountOfBaskets();
+            matchHandler.BalanceBaskets();
 
             return Ok(new List<Order>());
         }
@@ -32,7 +37,7 @@ namespace FoodCourt.Controllers
 
         public async Task<IHttpActionResult> Put(CreateOrderViewModel order)
         {
-            Dish dish = await UnitOfWork.DishRepository.SingleOrDefault(order.DishId);
+            Dish dish = await UnitOfWork.DishRepository.SingleOrDefault(order.DishId, false, "Restaurant");
             if (dish == null)
             {
                 return BadRequest("Wrong dish id.");
@@ -52,24 +57,38 @@ namespace FoodCourt.Controllers
                 Poll = currentPoll
             };
 
-            await UnitOfWork.OrderRepository.Insert(newOrder);
+            // validate if user doesn't have other order from the same restaurant within the same poll
+            Restaurant restaurant = dish.Restaurant;
+            bool hasOtherOrderInRestaurant =
+                await
+                    UnitOfWork.OrderRepository.GetForPoll(currentPoll)
+                        .AnyAsync(o => o.CreatedBy.Id == CurrentUser.Id && o.Dish.Restaurant.Id == restaurant.Id);
 
-            return Ok(new OrderViewModel()
+            if (!hasOtherOrderInRestaurant)
             {
-                DishId = newOrder.Dish.Id,
-                Dish = newOrder.Dish.Name,
+                await UnitOfWork.OrderRepository.Insert(newOrder);
 
-                KindId = newOrder.Dish.Kind.Id,
-                Kind = newOrder.Dish.Kind.Name,
+                return Ok(new OrderViewModel()
+                {
+                    DishId = newOrder.Dish.Id,
+                    Dish = newOrder.Dish.Name,
 
-                RestaurantId = newOrder.Dish.Restaurant.Id,
-                Restaurant = newOrder.Dish.Restaurant.Name,
+                    KindId = newOrder.Dish.Kind.Id,
+                    Kind = newOrder.Dish.Kind.Name,
 
-                //IsOptional = newOrder.IsOptional,
-                IsHelpNeeded = newOrder.IsHelpNeeded,
+                    RestaurantId = newOrder.Dish.Restaurant.Id,
+                    Restaurant = newOrder.Dish.Restaurant.Name,
 
-                UserEmail = newOrder.CreatedBy.Email
-            });
+                    //IsOptional = newOrder.IsOptional,
+                    IsHelpNeeded = newOrder.IsHelpNeeded,
+
+                    UserEmail = newOrder.CreatedBy.Email
+                });
+            }
+            else
+            {
+                return BadRequest("Current user already have ordered in this restaurant.");
+            }
         }
     }
 }

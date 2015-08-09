@@ -38,7 +38,7 @@ namespace FoodCourt.Service
 
     public interface IOrderRepository : IBaseRepository<Order>
     {
-        IQueryable<Order> GetForPoll(Poll poll);
-        IQueryable<Order> GetForPoll(Guid pollId);
+        IQueryable<Order> GetForPoll(Poll poll, string includes ="");
+        IQueryable<Order> GetForPoll(Guid pollId, string includes = "");
     }
 }
