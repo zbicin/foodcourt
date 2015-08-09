@@ -178,15 +178,22 @@ namespace FoodCourt.Controllers
         {
             var model = TempData["RegisterViewModel"] as RegisterViewModel;
 
-            // TODO: create guest accounts
+            var userEntity = await UnitOfWork.UserAccountRepository.FindByEmailAsync(model.AdminEmail);
+
             // TODO: send invitations             
             var guests = new List<ApplicationUser>();
 
-            var userEntity = await UnitOfWork.UserAccountRepository.FindByEmailAsync(model.AdminEmail);
+            var splittedGuestEmails = model.GuestsEmails.Split(',');
+            foreach (var singleEmail in splittedGuestEmails)
+            {
+                var guest = new ApplicationUser { Email = singleEmail, UserName = singleEmail };
+                await UserManager.CreateAsync(guest);
+                guest = await UnitOfWork.UserAccountRepository.FindByEmailAsync(singleEmail);
+                guests.Add(guest);
+            }
 
+            guests.Add(userEntity);
             var newGroup = new Model.Group(model.GroupName, guests);
-            newGroup.ApplicationUsers.Add(userEntity);
-
             await UnitOfWork.GroupRepository.Insert(newGroup);
 
             return RedirectToAction("ChangePassword", "Manage");
