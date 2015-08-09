@@ -8,6 +8,7 @@
     $scope.newOrder = {};
     clearNewOrder(); // sets default values
 
+    $scope.cancelOrder = cancelOrder;
     $scope.getRestaurantsForKind = getRestaurantsForKind;
     $scope.getDishedForRestaurant = getDishedForRestaurant;
     $scope.processOrderForm = processOrderForm;
@@ -57,6 +58,16 @@
     getKinds();
 
     // public ------
+    function cancelOrder(order) {
+        if (confirm('Are you sure you want to cancel your order \"' + order.Dish + '\" from \"' + order.Restaurant + '\"?')) {
+            OrderService.delete(order.Id).then(function (response) {
+                refreshMatches();
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    }
+
     function getRestaurantsForKind(kind) {
         RestaurantService.getListForKindId(kind.Id).then(function (response) {
             $scope.restaurants = response.data;
@@ -80,15 +91,15 @@
             clearNewOrder();
             refreshMatches();
             getKinds();
-        }, function(error) {
+        }, function (error) {
             console.log(error);
         });
     }
 
     function refreshMatches() {
-        OrderService.getMatchesForPoll($scope.poll).then(function(response) {
+        OrderService.getMatchesForPoll($scope.poll).then(function (response) {
             $scope.matches = response.data;
-        }, function(error) {
+        }, function (error) {
             console.log(error);
         });
     }

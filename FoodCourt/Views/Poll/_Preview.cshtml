@@ -8,8 +8,13 @@
     <label>{{ match.Orders[0].Restaurant }}</label>
     <ul>
         <li ng-repeat="order in match.Orders">
-            {{ order.Dish }} for {{ order.UserEmail }}
-            <span ng-show="order.UserEmail === '@User.Identity.Name'" class="label label-info">Yours</span>
+            {{ order.Dish }} for
+            <strong ng-show="order.UserEmail === '@User.Identity.Name'">You</strong>
+            <span ng-show="order.UserEmail != '@User.Identity.Name'">{{ order.UserEmail }}</span>
+
+            <a href="#" ng-show="order.UserEmail === '@User.Identity.Name' || @Html.Raw(ViewBag.IsAdminOfGroup ? "true" : "false")" ng-click="cancelOrder(order)">
+                Cancel
+            </a>
         </li>
     </ul>
 </div>

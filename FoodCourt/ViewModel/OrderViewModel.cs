@@ -16,5 +16,6 @@ namespace FoodCourt.ViewModel
         public bool IsOptional { get; set; }
         public bool IsHelpNeeded { get; set; }
         public string UserEmail { get; set; }
+        public Guid Id { get; set; }
     }
 }

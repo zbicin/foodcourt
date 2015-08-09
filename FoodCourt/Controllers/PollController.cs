@@ -22,9 +22,10 @@ namespace FoodCourt.Controllers
     public class PollController : BaseController
     {
 
-        // GET: Order
+        // GET: Poll
         public ActionResult Index()
         {
+            ViewBag.IsAdminOfGroup = CurrentGroup.CreatedBy == CurrentUser;
             return View();
         }
 
