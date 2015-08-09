@@ -78,7 +78,7 @@ namespace FoodCourt.Service
             message.Subject = subject;
             message.Html = messageBody;
 
-            Transport.DeliverAsync(message).Wait();
+            Transport.DeliverAsync(message);
         }
 
         private string RetrieveEmailSubject(string kind)

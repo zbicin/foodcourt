@@ -21,56 +21,68 @@ namespace FoodCourt.Service
         // try to balance baskets mixing orders from step 1 & 2 starting from biggest basket
 
         private List<OrderBasket> _orderBaskets;
-        private List<OrderBasket> _reducedBaskets;
+        private List<OrderBasket> _originalBaskets;
+        private List<BasketBalanceRankElement> _balanceResults;
+        //private List<OrderBasket> _reducedBaskets;
 
         public List<OrderBasket> ReducedBaskets
         {
-            get { return _reducedBaskets; }
+            get { return _orderBaskets; }
         }
 
         public OrderMatchHandler(List<Order> ordersPool)
         {
             GroupOrdersIntoBaskets(ordersPool);
-            _reducedBaskets = new List<OrderBasket>();
+            //_reducedBaskets = new List<OrderBasket>();
         }
 
         private void GroupOrdersIntoBaskets(List<Order> ordersPool)
         {
-            _orderBaskets = ordersPool.GroupBy(o => o.Dish.Restaurant.Id, o => o).Select(g => new OrderBasket()
+            _orderBaskets = ParseInput(ordersPool).ToList();
+            _originalBaskets = ParseInput(ordersPool).ToList();
+        }
+
+        private IEnumerable<OrderBasket> ParseInput(List<Order> ordersPool)
+        {
+            return ordersPool.GroupBy(o => o.Dish.Restaurant.Id, o => o).Select(g => new OrderBasket()
             {
                 RestaurantId = g.Key,
-                Orders = g.ToList()
-            }).ToList();
+                MatchedOrders = g.ToList()
+            }).OrderBy(b => b.MatchedOrders.Count()).Select(o => o);
         }
 
         public void ReduceAmountOfBaskets()
         {
-            List<OrderBasket> basketsOrderedBySize = _orderBaskets.OrderBy(b => b.Orders.Count()).ToList();
-
-            foreach (OrderBasket orderBasket in basketsOrderedBySize)
+            foreach (OrderBasket orderBasket in _orderBaskets)
             {
                 ReduceBasketSize(orderBasket);
             }
+
+            CleanupEmptyBaskets();
         }
 
         private void ReduceBasketSize(OrderBasket orderBasket)
         {
             var reducedBasket = new OrderBasket() {RestaurantId = orderBasket.RestaurantId};
 
-            foreach (Order order in orderBasket.Orders)
+            Order[] orderListClone = new Order[orderBasket.MatchedOrders.Count];
+            orderBasket.MatchedOrders.CopyTo(orderListClone);
+
+            foreach (Order order in orderListClone)
             {
                 // does owner of this order have other order in another basket?
                 var orderOwner = order.CreatedBy;
-                if (!HasOrderInAnotherBasket(_reducedBaskets, orderOwner, orderBasket.RestaurantId))
+                if (HasOrderInAnotherBasket(_orderBaskets, orderOwner, orderBasket.RestaurantId))
                 {
                     // rewrite order to basket
-                    reducedBasket.Orders.Add(order);
+                    orderBasket.MatchedOrders.Remove(order);
+                    orderBasket.PossibleOrders.Add(order);
                 }
             }
 
-            if (reducedBasket.Orders.Any())
+            if (reducedBasket.MatchedOrders.Any())
             {
-                _reducedBaskets.Add(reducedBasket);
+                _orderBaskets.Add(reducedBasket);
             }
         }
 
@@ -78,25 +90,60 @@ namespace FoodCourt.Service
         {
             return baskets.Any(
                 b => b.RestaurantId != currentRestaurantId 
-                    && b.Orders.Any(o => o.CreatedBy.Id == owner.Id));
+                    && b.MatchedOrders.Any(o => o.CreatedBy.Id == owner.Id));
         }
 
 
 
         public void BalanceBaskets()
         {
-            List<OrderBasket> basketsOrderedBySize = _reducedBaskets.OrderByDescending(b => b.Orders.Count()).ToList();
-
-            foreach (OrderBasket orderBasket in basketsOrderedBySize)
+            // iterate balancing until baskets remain the same
+            _balanceResults = new List<BasketBalanceRankElement>();
+            do
             {
-                BalanceBasket(orderBasket);
+                List<OrderBasket> basketsOrderedBySize =
+                    _orderBaskets.OrderByDescending(b => b.MatchedOrders.Count()).ToList();
+
+                foreach (OrderBasket orderBasket in basketsOrderedBySize)
+                {
+                    BalanceBasket(orderBasket);
+                }
+
+                _balanceResults.Add(new BasketBalanceRankElement(_orderBaskets));
+            } while (!AreBalanced());
+        }
+
+        private bool AreBalanced()
+        {
+            // compare last two results
+            int balanceResultsCnt = _balanceResults.Count();
+            if (balanceResultsCnt >= 2)
+            {
+                var last = _balanceResults.ElementAt(balanceResultsCnt - 1);
+                var secondToLast = _balanceResults.ElementAt(balanceResultsCnt - 2);
+
+                if (Math.Abs(last.Rank - secondToLast.Rank) < 0.001)
+                {
+                    return true;
+                }
+                
+                if(last.Rank > secondToLast.Rank)
+                {
+                    // we achieved worst result than before
+                    // restore and finish balancing
+                    _orderBaskets = new List<OrderBasket>(secondToLast.Baskets);
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         private void BalanceBasket(OrderBasket orderBasket)
         {
-            Order[] orderListClone = new Order[orderBasket.Orders.Count];
-            orderBasket.Orders.CopyTo(orderListClone);
+            Order[] orderListClone = new Order[orderBasket.MatchedOrders.Count];
+            orderBasket.MatchedOrders.CopyTo(orderListClone);
 
             foreach (Order order in orderListClone)
             {
@@ -104,38 +151,72 @@ namespace FoodCourt.Service
                 var orderOwner = order.CreatedBy;
 
                 IEnumerable<Guid> currentlySmallerBaskets =
-                    _reducedBaskets.Where(b => b.Orders.Count() < orderBasket.Orders.Count())
+                    _orderBaskets.Where(b => (b.MatchedOrders.Count() < orderBasket.MatchedOrders.Count() || (b.MatchedOrders.Count() == orderBasket.MatchedOrders.Count() && orderBasket.RestaurantId != b.RestaurantId)))
+                        .OrderByDescending(b => b.MatchedOrders.Count())
                         .Select(b => b.RestaurantId);
 
                 OrderBasket smallerBasket =
                     _orderBaskets.FirstOrDefault(b => currentlySmallerBaskets.Contains(b.RestaurantId) &&
-                                                      b.Orders.Any(o => o.CreatedBy.Id == orderOwner.Id));
+                                                      b.PossibleOrders.Any(o => o.CreatedBy.Id == orderOwner.Id));
 
                 if (smallerBasket != null)
                 {
                     // if so, remove order from this basket 
-                    orderBasket.Orders.Remove(order);
-                    CleanupEmptyBaskets();
+                    orderBasket.MatchedOrders.Remove(order);
+                    // while balancing DO NOT save order in PossibleOrders to avoid infinite loops
 
                     // and rewrite previously removed orders into smaller basket
-                    _reducedBaskets.Single(b => b.RestaurantId == smallerBasket.RestaurantId).Orders.Add(order);
+                    RestoreOrder(smallerBasket, orderOwner);
+
+                    CleanupEmptyBaskets();
+
+                    break; 
                 }
             }
         }
 
+        private void RestoreOrder(OrderBasket basket, ApplicationUser owner)
+        {
+            Order order = basket.PossibleOrders.Single(o => o.CreatedBy.Id == owner.Id);
+            basket.PossibleOrders.Remove(order);
+            basket.MatchedOrders.Add(order);
+        }
+
         private void CleanupEmptyBaskets()
         {
-            _reducedBaskets.RemoveAll(b => !b.Orders.Any());
+            _orderBaskets.RemoveAll(b => !b.MatchedOrders.Any());
         }
     }
+
     public class OrderBasket
     {
         public Guid RestaurantId;
-        public List<Order> Orders;
+        public List<Order> MatchedOrders;
+        public List<Order> PossibleOrders;
+
+        public bool IsNotMatched = false;
 
         public OrderBasket()
         {
-            Orders = new List<Order>();
+            MatchedOrders = new List<Order>();
+            PossibleOrders = new List<Order>();
+        }
+    }
+
+    public class BasketBalanceRankElement
+    {
+        public double Rank;
+
+        public List<OrderBasket> Baskets;
+
+        public BasketBalanceRankElement(List<OrderBasket> baskets)
+        {
+            Baskets = ObjectCopier.Clone(baskets);
+
+            int basketsCnt = Baskets.Count();
+            int spread = Baskets.Max(b => b.MatchedOrders.Count()) - Baskets.Min(b => b.MatchedOrders.Count());
+
+            Rank = spread/(double)basketsCnt;
         }
     }
 }

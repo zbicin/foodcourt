@@ -26,7 +26,8 @@ namespace FoodCourt.Controllers.Base
                 {
                     if (User.Identity.IsAuthenticated == false)
                     {
-                        throw new UnauthorizedAccessException("Not authenticated.");
+                        //throw new UnauthorizedAccessException("Not authenticated.");
+                        return new ApplicationUser();
                     }
 
                     Guid currentUserId = new Guid(User.Identity.GetUserId());

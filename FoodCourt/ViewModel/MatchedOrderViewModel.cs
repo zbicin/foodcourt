@@ -1,5 +1,7 @@
 using System;
+using System;
 using System.Collections.Generic;
+using FoodCourt.ViewModel;
 
 namespace FoodCourt.ViewModel
 {

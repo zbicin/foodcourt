@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
 
 namespace FoodCourt.Model.Identity
 {
@@ -37,6 +38,7 @@ namespace FoodCourt.Model.Identity
             set;
         }
 
+        [JsonIgnore]
         public Group Group
         {
             get;

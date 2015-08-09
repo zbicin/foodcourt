@@ -208,6 +208,7 @@ namespace FoodCourt.Controllers
             return RedirectToAction("ChangePassword", "Manage");
         }
 
+        [AllowAnonymous]
         public async Task<ActionResult> SignInByToken(Guid t)
         {
             ApplicationUser user = await UnitOfWork.UserAccountRepository.GetAll(false, "ChangePasswordToken").SingleOrDefaultAsync(u => u.ChangePasswordToken.Id == t);

@@ -31,9 +31,22 @@ namespace FoodCourt.Controllers
             matchHandler.ReduceAmountOfBaskets();
             matchHandler.BalanceBaskets();
 
-            var viewModelQuery = matchHandler.ReducedBaskets.Select(b => new MatchedOrderViewModel()
+            var matches = matchHandler.ReducedBaskets;
+
+            // already matched order IDs
+            var matchedOrderIds = matches.SelectMany(b => b.MatchedOrders).Select(o => o.Id);
+
+            // add not matched orders
+            var notGroupedOrders = orders.Where(o => matchedOrderIds.Contains(o.Id) == false).ToList();
+            matches.Add(new OrderBasket()
             {
-                Orders = b.Orders.Select(o => new OrderViewModel()
+                MatchedOrders = notGroupedOrders,
+                IsNotMatched = true
+            });
+
+            var viewModelQuery = matches.Select(b => new MatchedOrderViewModel()
+            {
+                Orders = b.MatchedOrders.Select(o => new OrderViewModel()
                 {
                     RestaurantId = b.RestaurantId,
                     Dish = o.Dish.Name,
@@ -41,14 +54,13 @@ namespace FoodCourt.Controllers
                     Kind = o.Dish.Kind.Name,
                     KindId = o.Dish.Kind.Id,
                     IsHelpNeeded = o.IsHelpNeeded,
-                    Restaurant = o.Dish.Restaurant.Name,
+                    Restaurant = !b.IsNotMatched ? o.Dish.Restaurant.Name : "Not matched",
                     UserEmail = o.CreatedBy.Email
                 }).ToList(),
-                RestaurantId = b.RestaurantId
+                RestaurantId = !b.IsNotMatched ? b.RestaurantId : new Guid()
             });
 
             var viewModelList = viewModelQuery.ToList();
-
             return Ok(viewModelList);
         }
 
