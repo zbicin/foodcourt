@@ -163,6 +163,9 @@
             isOptional: false,
             isHelpNeeded: false
         };
+
+        $scope.dishes = [];
+        $scope.restaurants = [];
     }
 
     function addPositionPrompt(question, serviceResponsible, collectionOfElements) {
