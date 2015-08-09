@@ -27,31 +27,38 @@ namespace FoodCourt.Controllers
             var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind");
             List<Order> orders = query.ToList();
 
-            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
-            matchHandler.ProcessOrders();
-
-            // add not matched orders
-            var matches = matchHandler.AddNotMatchedOrders();
-
-            var viewModelQuery = matches.Select(b => new MatchedOrderViewModel()
+            if (orders.Count > 0)
             {
-                Orders = b.MatchedOrders.Select(o => new OrderViewModel()
-                {
-                    Id = o.Id,
-                    RestaurantId = b.RestaurantId,
-                    Dish = o.Dish.Name,
-                    DishId = o.Dish.Id,
-                    Kind = o.Dish.Kind.Name,
-                    KindId = o.Dish.Kind.Id,
-                    IsHelpNeeded = o.IsHelpNeeded,
-                    Restaurant = !b.IsNotMatched ? o.Dish.Restaurant.Name : "Not matched",
-                    UserEmail = o.CreatedBy.Email
-                }).ToList(),
-                RestaurantId = !b.IsNotMatched ? b.RestaurantId : new Guid()
-            });
+                OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+                matchHandler.ProcessOrders();
 
-            var viewModelList = viewModelQuery.ToList();
-            return Ok(viewModelList);
+                // add not matched orders
+                var matches = matchHandler.AddNotMatchedOrders();
+
+                var viewModelQuery = matches.Select(b => new MatchedOrderViewModel()
+                {
+                    Orders = b.MatchedOrders.Select(o => new OrderViewModel()
+                    {
+                        Id = o.Id,
+                        RestaurantId = b.RestaurantId,
+                        Dish = o.Dish.Name,
+                        DishId = o.Dish.Id,
+                        Kind = o.Dish.Kind.Name,
+                        KindId = o.Dish.Kind.Id,
+                        IsHelpNeeded = o.IsHelpNeeded,
+                        Restaurant = !b.IsNotMatched ? o.Dish.Restaurant.Name : "Not matched",
+                        UserEmail = o.CreatedBy.Email
+                    }).ToList(),
+                    RestaurantId = !b.IsNotMatched ? b.RestaurantId : new Guid()
+                });
+
+                var viewModelList = viewModelQuery.ToList();
+                return Ok(viewModelList);
+            }
+            else
+            {
+                return Ok(new List<MatchedOrderViewModel>());
+            }
         }
 
         [System.Web.Http.HttpDelete]

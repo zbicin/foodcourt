@@ -50,7 +50,8 @@ namespace FoodCourt.Controllers
                 PhoneNumber = restaurant.PhoneNumber
             };
 
-            var existingRestaurant = UnitOfWork.RestaurantRepository.Search(restaurant.Name, "", true).FirstOrDefault();
+            var existingRestaurant = UnitOfWork.RestaurantRepository.Search(restaurant.Name, "Group", true)
+                .FirstOrDefault(r => r.Group.Id == CurrentGroup.Id);
 
             if (existingRestaurant != null)
             {

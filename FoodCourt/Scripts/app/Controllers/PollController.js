@@ -11,6 +11,7 @@
     $scope.cancelOrder = cancelOrder;
     $scope.getRestaurantsForKindId = getRestaurantsForKindId;
     $scope.getDishesForRestaurantId = getDishesForRestaurantId;
+    $scope.finishPoll = finishPoll;
     $scope.processOrderForm = processOrderForm;
     $scope.refreshMatches = refreshMatches;
     $scope.showAddDishPrompt = showAddDishPrompt;
@@ -48,6 +49,7 @@
     });
 
     PollService.tryGetCurrentPoll().then(function (response) {
+        getKinds();
         $scope.poll = response.data;
         refreshMatches();
     }, function (error) {
@@ -55,7 +57,6 @@
         alert('Something went terribly wrong. See console for details.');
     });
 
-    getKinds();
 
     // public ------
     function cancelOrder(order) {
@@ -63,6 +64,23 @@
             OrderService.delete(order.Id).then(function (response) {
                 refreshMatches();
             }, function (error) {
+                console.log(error);
+            });
+        }
+    }
+
+    function finishPoll() {
+        if (confirm('Are you sure you want to finish poll?')) {
+            PollService.finish().then(function(response) {
+                var poll = response.data;
+
+                if (poll.IsResolved) {
+                    alert('The poll has been successfuly resolved. Check your email inbox for details.');
+                } else {
+                    alert('The poll has been partially resolved. There are still people that haven\'t been matched. Check your email inbox for details.')
+                }
+                location.reload();
+            }, function(error) {
                 console.log(error);
             });
         }

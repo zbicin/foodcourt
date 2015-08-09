@@ -75,9 +75,9 @@ namespace FoodCourt.Controllers
             return Json(currentPollViewModel, JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> FinishPoll()
+        public async Task<ActionResult> Finish()
         {
-            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders, CreatedBy").SingleAsync();
+            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders.Dish.Kind, Orders.Dish.Restaurant, CreatedBy").SingleAsync();
 
             if (poll.CreatedBy.Id != CurrentUser.Id)
             {
@@ -85,12 +85,16 @@ namespace FoodCourt.Controllers
             }
 
             List<Order> orders = poll.Orders.ToList();
+            List<OrderBasket> matches = new List<OrderBasket>();
 
-            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
-            matchHandler.ProcessOrders();
+            if (orders.Count > 0)
+            {
+                OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+                matchHandler.ProcessOrders();
 
-            // add not matched orders
-            var matches = matchHandler.AddNotMatchedOrders();
+                // add not matched orders
+                matches = matchHandler.AddNotMatchedOrders();
+            }
 
             if (poll.IsFinished)
             {
@@ -124,7 +128,18 @@ namespace FoodCourt.Controllers
                 }
             }
 
-            return Json("");
+            // TODO: make PollViewModel constructor that handles rewriting
+            return Json(new PollViewModel()
+            {
+                Id = poll.Id,
+                Group =  CurrentGroup.Name,
+                Orders = null, // i'm too lazy
+                ETA = poll.ETA,
+                FinishedAt = poll.FinishedAt,
+                IsFinished = poll.IsFinished,
+                IsResolved = poll.IsResolved,
+                Remarks = poll.Remarks
+            });
         }
 
         private void ProcessFinishedPoll(Poll poll, List<OrderBasket> matches)

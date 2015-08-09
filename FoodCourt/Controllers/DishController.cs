@@ -58,7 +58,8 @@ namespace FoodCourt.Controllers
                 throw new InvalidOperationException("Could not create Dish without providing KindId.");
             }
 
-            var existingDish = UnitOfWork.DishRepository.Search(dish.Name, "Restaurant,Kind", true).FirstOrDefault(d => d.Restaurant.Id == dish.RestaurantId && d.Kind.Id == dish.KindId);
+            var existingDish = UnitOfWork.DishRepository.Search(dish.Name, "Restaurant,Kind,Group", true)
+                .FirstOrDefault(d => d.Restaurant.Id == dish.RestaurantId && d.Kind.Id == dish.KindId && d.Group.Id == CurrentGroup.Id);
 
             if (existingDish != null)
             {
@@ -69,7 +70,7 @@ namespace FoodCourt.Controllers
             {
                 Restaurant = new Restaurant() { Id = dish.RestaurantId },
                 Kind = new Kind() { Id = dish.KindId },
-
+                Group = CurrentGroup,
                 Name = dish.Name
             };
 

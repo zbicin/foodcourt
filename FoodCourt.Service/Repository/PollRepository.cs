@@ -15,7 +15,7 @@ namespace FoodCourt.Service.Repository
         public IQueryable<Poll> GetCurrentForGroup(Group group, string includes = "")
         {
             var query = this.GetAll(false, "Group").Where(p => p.Group.Id == group.Id && p.IsFinished == false);
-            ResolveIncludes(includes, query);
+            query = ResolveIncludes(includes, query);
             return query;
         }
     }

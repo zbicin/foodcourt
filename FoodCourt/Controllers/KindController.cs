@@ -38,10 +38,12 @@ namespace FoodCourt.Controllers
         {
             Kind newKind = new Kind()
             {
-                Name = kind.Name
+                Name = kind.Name,
+                Group = CurrentGroup
             };
 
-            var existingKind = UnitOfWork.KindRepository.Search(kind.Name,"", true).FirstOrDefault();
+            var existingKind = UnitOfWork.KindRepository.Search(kind.Name,"Group", true)
+                .FirstOrDefault(k => k.Group.Id == CurrentGroup.Id);
 
             if (existingKind != null)
             {

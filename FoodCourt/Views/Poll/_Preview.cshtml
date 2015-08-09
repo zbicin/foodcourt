@@ -1,7 +1,20 @@
-﻿<div>
+﻿@if (ViewBag.IsAdminOfGroup)
+{
+    <div>
+        <a href="#" class="btn btn-default" ng-click="finishPoll()">Finish poll</a>
+    </div>
+    <p class="text-muted" ng-show="!poll.IsFinished">
+        It's first closing of the poll. Guests will still have a chance to alter their orders if they are not matched with any group.
+    </p>
+        <p class="text-warning" ng-show="poll.IsFinished">
+            It's second closing of the poll. Guests will not have a chance to alter their orders anymore in this poll.
+        </p>
+}
+
+
+<div>
     <label>Matches so far</label>
     <a href="#" class="btn btn-default" ng-click="refreshMatches()">Refresh</a>
-    <a href="#" class="btn btn-default">Finish poll todo</a>
 </div>
 
 <div ng-repeat="match in matches">
@@ -18,3 +31,6 @@
         </li>
     </ul>
 </div>
+<p class="text-muted" ng-show="matches.length === 0">
+    No orders have been placed so far. How about being the first one? The world belongs to the brave.
+</p>
