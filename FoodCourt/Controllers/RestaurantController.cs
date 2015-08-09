@@ -15,14 +15,18 @@ namespace FoodCourt.Controllers
 {
     public class RestaurantController : BaseApiController
     {
-        public async Task<IHttpActionResult> GetList()
+        public async Task<IHttpActionResult> GetList(Guid kindId)
         {
-            return await Search("");
+            return await Search("", kindId);
         }
 
-        public async Task<IHttpActionResult> Search(string searchPhrase)
+        public async Task<IHttpActionResult> Search(string searchPhrase, Guid kindId)
         {
-            var query = UnitOfWork.RestaurantRepository.Search(searchPhrase);
+            var restaurantIds =
+                UnitOfWork.DishRepository.GetAll(false, "Restaurant, Kind")
+                    .Where(d => d.Kind.Id == kindId)
+                    .Select(d => d.Restaurant.Id);
+            var query = UnitOfWork.RestaurantRepository.Search(searchPhrase).Where(r => restaurantIds.Contains(r.Id));
             var viewModelQuery = query.Select(r => new RestaurantViewModel()
             {
                 Id = r.Id,
