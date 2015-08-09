@@ -64,6 +64,17 @@ namespace FoodCourt.Controllers
             return Ok(viewModelList);
         }
 
+        public async Task<IHttpActionResult> Delete(Guid orderId)
+        {
+            Order order = await UnitOfWork.OrderRepository.Single(orderId, false, "CreatedBy, Poll");
+            if (!order.Poll.IsFinished && (CurrentGroup.CreatedBy.Id == CurrentUser.Id || CurrentUser.Id == order.CreatedBy.Id))
+            {
+                var result = await UnitOfWork.OrderRepository.Delete(order);
+                return Ok(result);
+            }
+
+            return Unauthorized();
+        }
 
         public async Task<IHttpActionResult> Put(CreateOrderViewModel order)
         {
