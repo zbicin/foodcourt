@@ -1,4 +1,4 @@
-﻿angular.module('FoodCourtApp').service('PollService', ['apiUrl', 'isDebug', '$http', '$q', function (apiUrl, isDebug, $http, $q) {
+﻿angular.module('FoodCourtApp').service('KindService', ['apiUrl', 'isDebug', '$http', '$q', function (apiUrl, isDebug, $http, $q) {
     function basicGet(localUrl) {
         var deferred = $q.defer();
 
@@ -26,8 +26,8 @@
     }
 
     return {
-        tryGetCurrentPoll: function () {
-            return basicPost('Poll/TryGetCurrentPoll', {});
+        getList: function () {
+            return basicGet('api/Kind/GetList');
         }
     };
 }]);

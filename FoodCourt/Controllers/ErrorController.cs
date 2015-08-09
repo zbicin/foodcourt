@@ -13,11 +13,5 @@ namespace FoodCourt.Controllers
             return View();
         }
 
-        public ActionResult Test()
-        {
-            FoodCourt.Model.Group a = null;
-            var f = a.Id != null;
-            return View();
-        }
     }
 }

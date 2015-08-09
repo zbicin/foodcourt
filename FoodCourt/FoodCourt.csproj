@@ -239,6 +239,7 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\App.js" />
     <Content Include="Scripts\app\Controllers\PollController.js" />
+    <Content Include="Scripts\app\Services\KindService.js" />
     <Content Include="Scripts\app\Services\PollService.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

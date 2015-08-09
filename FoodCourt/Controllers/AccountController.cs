@@ -476,7 +476,7 @@ namespace FoodCourt.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Poll");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult
