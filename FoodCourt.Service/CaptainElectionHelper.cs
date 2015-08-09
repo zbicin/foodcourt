@@ -16,7 +16,7 @@ namespace FoodCourt.Service
         {
             var orderOwners = basket.MatchedOrders.Select(o => o.CreatedBy).OrderBy(u => u.LastOrderDate);
             var basketCaptain = orderOwners.First();
-
+            
             basket.Captain = basketCaptain; // (▀̿Ĺ̯▀̿ ̿)
         }
     }

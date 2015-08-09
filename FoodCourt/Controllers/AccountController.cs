@@ -183,8 +183,7 @@ namespace FoodCourt.Controllers
             var model = TempData["RegisterViewModel"] as RegisterViewModel;
 
             var userEntity = await UnitOfWork.UserAccountRepository.FindByEmailAsync(model.AdminEmail);
-
-            // TODO: send invitations             
+            
             var guests = new List<ApplicationUser>();
 
             var splittedGuestEmails = model.GuestsEmails.Split(',');

@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 using FoodCourt.Controllers.Base;
 using FoodCourt.Lib;
 using FoodCourt.Model;
+using FoodCourt.Model.Identity;
 using FoodCourt.Service;
 using FoodCourt.ViewModel;
 
@@ -21,6 +22,7 @@ namespace FoodCourt.Controllers
     [AuthorizeRedirectToRegister]
     public class PollController : BaseController
     {
+        private string[] _defaultKinds = new string[] {"Pizza", "Pasta", "Chinese", "Homemade", "Sushi"};
 
         // GET: Poll
         public ActionResult Index()
@@ -56,6 +58,17 @@ namespace FoodCourt.Controllers
                     IsResolved = false,
                     Id = newPoll.Id
                 };
+
+                foreach (var singleDefaultKind in _defaultKinds)
+                {
+                    await UnitOfWork.KindRepository.Insert(new Kind()
+                    {
+                        CreatedBy = (ApplicationUser) CurrentUser,
+                        Group = CurrentGroup,
+                        CreatedAt = DateTime.Now,
+                        Name = singleDefaultKind
+                    });
+                }
             }
 
             return Json(currentPollViewModel, JsonRequestBehavior.AllowGet);

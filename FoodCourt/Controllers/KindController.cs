@@ -21,7 +21,8 @@ namespace FoodCourt.Controllers
 
         public async Task<IHttpActionResult> Search(string searchPhrase)
         {
-            var query = UnitOfWork.KindRepository.Search(searchPhrase);
+            var query = UnitOfWork.KindRepository.Search(searchPhrase, "Group")
+                .Where(k => k.Group.Id == CurrentGroup.Id);
             var viewModelQuery = query.Select(k => new KindViewModel()
             {
                 Id = k.Id,
