@@ -83,7 +83,7 @@ namespace FoodCourt.Controllers.Base
             {
                 if (_postman == null)
                 {
-                    _postman = new Postman(Server.MapPath("~/Views/EmailTemplates"));
+                    _postman = new Postman(Server.MapPath("~/Views/EmailTemplate"));
                 }
                 return _postman;
             }

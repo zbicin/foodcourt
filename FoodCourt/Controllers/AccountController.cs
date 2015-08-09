@@ -193,16 +193,17 @@ namespace FoodCourt.Controllers
                 var guest = new ApplicationUser { Email = singleEmail, UserName = singleEmail };
                 await UserManager.CreateAsync(guest);
                 guest = await UnitOfWork.UserAccountRepository.FindByEmailAsync(singleEmail);
-                guest.ChangePasswordToken = new UserChangePasswordToken() { User = guest };
+                guest.ChangePasswordToken = new UserChangePasswordToken();
 
                 guests.Add(guest);
             }
+            var newGroup = new Model.Group(model.GroupName, guests);
+            await UnitOfWork.GroupRepository.Insert(newGroup);
 
             SendInvites(guests);
 
-            guests.Add(userEntity);
-            var newGroup = new Model.Group(model.GroupName, guests);
-            await UnitOfWork.GroupRepository.Insert(newGroup);
+            newGroup.ApplicationUsers.Add(userEntity);
+            await UnitOfWork.GroupRepository.Update(newGroup);
 
             return RedirectToAction("ChangePassword", "Manage");
         }
@@ -236,10 +237,10 @@ namespace FoodCourt.Controllers
             {
                 emailDtos.Add(new EmailDTO()
                 {
-                    GroupName = CurrentGroup.Name,
+                    GroupName = recipient.Group.Name,
                     GroupOwner = CurrentUser.UserName,
                     RecipientName = recipient.UserName,
-                    PasswordSetUrl = urlHelper.Action("SignInByToken", "Account", new { t = recipient.ChangePasswordToken.Id })
+                    PasswordSetUrl = urlHelper.Action("SignInByToken", "Account", new { t = recipient.ChangePasswordToken.Id }, ControllerContext.RequestContext.HttpContext.Request.Url.Scheme)
                 });
             }
 

@@ -9,8 +9,6 @@ namespace FoodCourt.Model.Identity
 {
     public class UserChangePasswordToken : BaseEntity
     {
-        public ApplicationUser User { get; set; }
-
         [NotMapped]
         public bool IsValid {
             get

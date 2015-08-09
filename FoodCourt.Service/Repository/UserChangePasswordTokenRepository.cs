@@ -21,7 +21,7 @@ namespace FoodCourt.Service.Repository
 
         public async Task<UserChangePasswordToken> GetForUser(Guid userId)
         {
-            return await GetAll(false, "User").SingleAsync(t => t.User.Id == userId);
+            return await Database.Users.Where(u => u.Id == userId).Select(u => u.ChangePasswordToken).SingleAsync();
         }
     }
 }

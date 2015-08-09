@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.Remoting.Channels;
@@ -17,8 +18,8 @@ namespace FoodCourt.Service
 {
     public class Postman
     {
-        private string _apiKey;
-        private string _sender;
+        private readonly string _sender;
+        private readonly string _apiKey;
 
         const string SendgridApiKey = "SendGridApiKey";
         const string SendgridSender = "SendGridSender";
@@ -31,14 +32,14 @@ namespace FoodCourt.Service
             {
                 if (_transport == null)
                 {
-                    _transport = new Web(_apiKey);
+                    _transport = new Web(_apiKey); 
                 }
 
                 return _transport;
             }
         }
 
-        private string _templatesPath;
+        private readonly string _templatesPath;
 
         public Postman(string emailTemplatePath)
         {
@@ -47,7 +48,7 @@ namespace FoodCourt.Service
             _templatesPath = emailTemplatePath;
         }
 
-        public async void Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
+        public void Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
         {
             if (recipients.Count() != emailDtos.Count())
             {
@@ -55,7 +56,7 @@ namespace FoodCourt.Service
             }
 
             string subject = RetrieveEmailSubject(kind);
-            List<string> messages = await ParseEmailTemplates(kind, emailDtos);
+            List<string> messages = ParseEmailTemplates(kind, emailDtos);
 
             var recipientsCnt = recipients.Count();
             for (int i = 0; i < recipientsCnt; i++)
@@ -68,7 +69,7 @@ namespace FoodCourt.Service
             }
         }
 
-        public async void SendSingleMessage(string recipient, string subject, string messageBody)
+        public void SendSingleMessage(string recipient, string subject, string messageBody)
         {
             SendGridMessage message = new SendGridMessage();
             message.From = new MailAddress(_sender);
@@ -77,7 +78,7 @@ namespace FoodCourt.Service
             message.Subject = subject;
             message.Html = messageBody;
 
-            await Transport.DeliverAsync(message);
+            Transport.DeliverAsync(message).Wait();
         }
 
         private string RetrieveEmailSubject(string kind)
@@ -85,9 +86,9 @@ namespace FoodCourt.Service
             return ConfigurationManager.AppSettings["EmailTemplate" + kind] as string;
         }
 
-        private async Task<List<string>> ParseEmailTemplates(string kind, List<EmailDTO> emailDtos)
+        private List<string> ParseEmailTemplates(string kind, List<EmailDTO> emailDtos)
         {
-            string template = await RetrieveEmailTemplate(kind);
+            string template = RetrieveEmailTemplate(kind);
             List<string> parsedTemplates = new List<string>();
 
             foreach (EmailDTO emailDto in emailDtos)
@@ -99,7 +100,7 @@ namespace FoodCourt.Service
             return parsedTemplates;
         }
 
-        private async Task<string> RetrieveEmailTemplate(string kind)
+        private string RetrieveEmailTemplate(string kind)
         {
             var templateStringBuilder = new StringBuilder();
             var fullTemplatePath = _templatesPath + "/" + kind + ".cshtml";
@@ -108,8 +109,8 @@ namespace FoodCourt.Service
             {
                 while (!reader.EndOfStream)
                 {
-                    var line = await reader.ReadLineAsync();
-                    if (!line.StartsWith("@model"))
+                    var line = reader.ReadLine();
+                    if (line != null && !line.StartsWith("@model"))
                     {
                         templateStringBuilder.AppendLine(line);
                     }
