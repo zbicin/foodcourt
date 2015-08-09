@@ -27,11 +27,7 @@ namespace FoodCourt.Controllers
             var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind");
             List<Order> orders = query.ToList();
 
-            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
-            matchHandler.ReduceAmountOfBaskets();
-            matchHandler.BalanceBaskets();
-
-            var matches = matchHandler.ReducedBaskets;
+            var matches = OrderMatchHandler.ProcessOrders(orders);
 
             // already matched order IDs
             var matchedOrderIds = matches.SelectMany(b => b.MatchedOrders).Select(o => o.Id);

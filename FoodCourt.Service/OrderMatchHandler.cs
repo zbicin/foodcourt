@@ -10,6 +10,24 @@ namespace FoodCourt.Service
 {
     public class OrderMatchHandler
     {
+        public static List<OrderBasket> ProcessOrders(List<Order> orders)
+        {
+            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+            matchHandler.ReduceAmountOfBaskets();
+            matchHandler.BalanceBaskets();
+
+            matchHandler.PerformElection();
+
+            return matchHandler._orderBaskets;
+        }
+
+        private void PerformElection()
+        {
+            foreach (var orderBasket in _orderBaskets)
+            {
+                CaptainElectionHelper.PerformReferendum(orderBasket);
+            }
+        }
 
         // step 1
         // group ALL orders by RestaurantId into baskets
@@ -24,13 +42,8 @@ namespace FoodCourt.Service
         private List<OrderBasket> _originalBaskets;
         private List<BasketBalanceRankElement> _balanceResults;
         //private List<OrderBasket> _reducedBaskets;
-
-        public List<OrderBasket> ReducedBaskets
-        {
-            get { return _orderBaskets; }
-        }
-
-        public OrderMatchHandler(List<Order> ordersPool)
+        
+        private OrderMatchHandler(List<Order> ordersPool)
         {
             GroupOrdersIntoBaskets(ordersPool);
             //_reducedBaskets = new List<OrderBasket>();
@@ -185,38 +198,6 @@ namespace FoodCourt.Service
         private void CleanupEmptyBaskets()
         {
             _orderBaskets.RemoveAll(b => !b.MatchedOrders.Any());
-        }
-    }
-
-    public class OrderBasket
-    {
-        public Guid RestaurantId;
-        public List<Order> MatchedOrders;
-        public List<Order> PossibleOrders;
-
-        public bool IsNotMatched = false;
-
-        public OrderBasket()
-        {
-            MatchedOrders = new List<Order>();
-            PossibleOrders = new List<Order>();
-        }
-    }
-
-    public class BasketBalanceRankElement
-    {
-        public double Rank;
-
-        public List<OrderBasket> Baskets;
-
-        public BasketBalanceRankElement(List<OrderBasket> baskets)
-        {
-            Baskets = ObjectCopier.Clone(baskets);
-
-            int basketsCnt = Baskets.Count();
-            int spread = Baskets.Max(b => b.MatchedOrders.Count()) - Baskets.Min(b => b.MatchedOrders.Count());
-
-            Rank = spread/(double)basketsCnt;
         }
     }
 }

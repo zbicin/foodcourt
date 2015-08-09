@@ -60,10 +60,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasketBalanceRankElement.cs" />
     <Compile Include="Mailer\EmailDTO.cs" />
     <Compile Include="ObjectCopier.cs" />
+    <Compile Include="OrderBasket.cs" />
     <Compile Include="OrderMatchHandler.cs" />
     <Compile Include="Mailer\Postman.cs" />
+    <Compile Include="CaptainElectionHelper.cs" />
     <Compile Include="Repository\DishRepository.cs" />
     <Compile Include="Repository\IUserChangePasswordTokenRepository.cs" />
     <Compile Include="Repository\KindRepository.cs" />
