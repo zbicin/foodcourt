@@ -17,6 +17,7 @@ namespace FoodCourt.Service
         IOrderRepository OrderRepository { get; }
         IPollRepository PollRepository { get; }
         IRestaurantRepository RestaurantRepository { get; }
+        IUserChangePasswordTokenRepository UserChangePasswordTokenRepository { get; }
         void SetCurrentUser(IApplicationUser currentUser);
         void Dispose();
         void Attach<T>(T entity) where T : BaseEntity;

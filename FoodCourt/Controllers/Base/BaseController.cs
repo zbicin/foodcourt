@@ -77,8 +77,21 @@ namespace FoodCourt.Controllers.Base
             }
         }
 
+        protected Postman Postman
+        {
+            get
+            {
+                if (_postman == null)
+                {
+                    _postman = new Postman(Server.MapPath("~/Views/EmailTemplates"));
+                }
+                return _postman;
+            }
+        }
+
         private bool _disposed = false;
         private bool _disposing = false;
+        private Postman _postman;
 
         protected override void Dispose(bool disposing)
         {

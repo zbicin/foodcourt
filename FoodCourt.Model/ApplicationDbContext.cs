@@ -25,6 +25,8 @@ namespace FoodCourt.Model
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ApplicationUser>().HasOptional(u => u.ChangePasswordToken).WithRequired(t => t.User).WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Poll>().HasMany(p => p.Orders).WithRequired(o => o.Poll).WillCascadeOnDelete(false);
             modelBuilder.Entity<Group>().HasMany(g => g.ApplicationUsers).WithOptional(u => u.Group).WillCascadeOnDelete(false);
 

@@ -60,6 +60,7 @@
     <Compile Include="OrderMatchHandler.cs" />
     <Compile Include="Mailer\Postman.cs" />
     <Compile Include="Repository\DishRepository.cs" />
+    <Compile Include="Repository\IUserChangePasswordTokenRepository.cs" />
     <Compile Include="Repository\KindRepository.cs" />
     <Compile Include="Repository\IRestaurantRepository.cs" />
     <Compile Include="Repository\IPollRepository.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Repository\ApplicationUserRepository.cs" />
     <Compile Include="Repository\BaseRepository.cs" />
     <Compile Include="Repository\RestaurantRepository.cs" />
+    <Compile Include="Repository\UserChangePasswordTokenRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Repository\IBaseRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
