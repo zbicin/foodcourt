@@ -20,6 +20,18 @@
                 });
 
                 return deferred.promise;
+            },
+            put: function (dish) {
+                var deferred = $q.defer();
+
+                $http.put(apiUrl + 'api/Dish/Put', dish)
+                .then(function (response) {
+                    deferred.resolve(response);
+                }, function (response) {
+                    deferred.reject(response);
+                });
+
+                return deferred.promise;
             }
         };
     }

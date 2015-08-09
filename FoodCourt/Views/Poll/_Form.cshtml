@@ -9,7 +9,11 @@
             </label>
         </div>
         <div>
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Something else (todo)</a>
+            <a href="#" ng-click="showAddKindPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="kinds.length > 0">Something else</span>
+                <span ng-show="kinds.length === 0">Add first kind (i.e. "Pizza", "Pasta")</span>
+            </a>
         </div>
     </div>
     <div class="form-group">
@@ -18,13 +22,17 @@
             <label>
                 <input type="radio" name="restaurant" ng-model="newOrder.restaurantId" value="{{restaurant.Id}}" ng-click="getDishedForRestaurant(restaurant)" />
                 {{restaurant.Name}}
-                <a ng-href="restaurant.menuUrl" ng-show="restaurant.menuUrl != null">
+                <a ng-href="{{ restaurant.MenuUrl }}" ng-show="restaurant.MenuUrl != null" target="_blank">
                     <i class="glyphicon glyphicon-new-window"></i> See menu
                 </a>
             </label>
         </div>
         <div ng-show="newOrder.kindId != null">
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Someone else (todo)</a>
+            <a href="#" ng-click="showAddRestaurantPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="restaurants.length > 0">Someone else</span>
+                <span ng-show="restaurants.length === 0">Add first restaurant of "{{ newOrder.kind }}" type</span>
+            </a>
         </div>
         <p class="help-block" ng-show="newOrder.kindId === null">
             (waiting for kind selection)
@@ -39,19 +47,23 @@
             </label>
         </div>
         <div ng-show="newOrder.restaurantId != null">
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Something else (todo)</a>
+            <a href="#" ng-click="showAddDishPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="dishes.length > 0">Something else</span>
+                <span ng-show='dishes.length === 0'>Add first dish in restaurant "{{ newOrder.restaurant }}"</span>
+            </a>
         </div>
         <p class="help-block" ng-show="newOrder.restaurantId === null">
             (waiting for restaurant selection)
         </p>
         <div class="checkbox">
             <label>
-                <input type="checkbox" ng-model="newOrder.isHelpNeeded" /> I'd like to share it
+                <input type="checkbox" ng-model="newOrder.isHelpNeeded" /> I can't handle this dish myself. I'd like to share it.
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <input type="checkbox" ng-model="newOrder.isOptional" /> I can have it optionally
+                <input type="checkbox" ng-model="newOrder.isOptional" /> I can have it optionally.
             </label>
         </div>
     </div>

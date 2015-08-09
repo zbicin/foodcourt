@@ -12,6 +12,9 @@
     $scope.getDishedForRestaurant = getDishedForRestaurant;
     $scope.processOrderForm = processOrderForm;
     $scope.refreshMatches = refreshMatches;
+    $scope.showAddDishPrompt = showAddDishPrompt;
+    $scope.showAddKindPrompt = showAddKindPrompt;
+    $scope.showAddRestaurantPrompt = showAddRestaurantPrompt;
 
     $scope.$watch('newOrder.kindId', function (newValue, oldValue) {
         if (newValue === oldValue) return;
@@ -94,6 +97,60 @@
         });
     }
 
+    function showAddDishPrompt() {
+        var usersInput = prompt('Give name of new dish (i.e. \"Margaritha\", \"Dumplings with cheese\")');
+        if (usersInput) {
+            DishService.put({
+                KindId: $scope.newOrder.kindId,
+                Name: usersInput,
+                RestaurantId: $scope.newOrder.restaurantId
+            }).then(function (response) {
+                $scope.dishes.push(response.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    }
+
+    function showAddKindPrompt() {
+        var usersInput = prompt('Give name of new dish kind (i.e. \"Pizza\", \"Pasta\")');
+        if (usersInput) {
+            KindService.put({
+                Name: usersInput
+            }).then(function (response) {
+                $scope.kinds.push(response.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    }
+
+    function showAddRestaurantPrompt() {
+        var name = prompt('Give name of new restaurant (i.e. \"Da Grasso Zachodnia\", \"Ha Long Piotrkowska\")');
+        if (name) {
+            var phoneNumber = prompt('Give a contact number to \"' + name + '\", it will simplify the ordering process. You can leave this field blank.');
+            var menuUrl = prompt('Give a url to the menu of \"' + name + '\". You can leave this field blank.');
+
+            if (!phoneNumber) {
+                phoneNumber = null;
+            }
+
+            if (!menuUrl) {
+                menuUrl = null;
+            }
+
+            RestaurantService.put({
+                MenuUrl: menuUrl,
+                Name: name,
+                PhoneNumber: phoneNumber
+            }).then(function (response) {
+                $scope.restaurants.push(response.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    }
+
     // private --------
     function clearNewOrder() {
         $scope.newOrder = {
@@ -106,5 +163,8 @@
             isOptional: false,
             isHelpNeeded: false
         };
+    }
+
+    function addPositionPrompt(question, serviceResponsible, collectionOfElements) {
     }
 }]);

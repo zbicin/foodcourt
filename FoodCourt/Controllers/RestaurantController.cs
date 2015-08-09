@@ -44,6 +44,8 @@ namespace FoodCourt.Controllers
         {
             Restaurant newRestaurant = new Restaurant()
             {
+                Group = CurrentGroup,
+                MenuUrl = restaurant.MenuUrl,
                 Name = restaurant.Name,
                 PhoneNumber = restaurant.PhoneNumber
             };
@@ -53,6 +55,7 @@ namespace FoodCourt.Controllers
             return Ok(new RestaurantViewModel()
             {
                 Id = newRestaurant.Id,
+                MenuUrl = newRestaurant.MenuUrl,
                 Name = newRestaurant.Name,
                 PhoneNumber = newRestaurant.PhoneNumber
             });

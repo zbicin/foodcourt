@@ -18,6 +18,18 @@
                 });
 
                 return deferred.promise;
+            },
+            put: function (restaurant) {
+                var deferred = $q.defer();
+
+                $http.put(apiUrl + 'api/Restaurant/Put', restaurant)
+                .then(function (response) {
+                    deferred.resolve(response);
+                }, function (response) {
+                    deferred.reject(response);
+                });
+
+                return deferred.promise;
             }
         };
     }
