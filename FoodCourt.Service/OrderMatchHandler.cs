@@ -23,6 +23,11 @@ namespace FoodCourt.Service
         private List<OrderBasket> _orderBaskets;
         private List<OrderBasket> _reducedBaskets;
 
+        public List<OrderBasket> ReducedBaskets
+        {
+            get { return _reducedBaskets; }
+        }
+
         public OrderMatchHandler(List<Order> ordersPool)
         {
             GroupOrdersIntoBaskets(ordersPool);

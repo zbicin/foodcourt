@@ -17,6 +17,18 @@
             });
 
             return deferred.promise;
+        },
+        getMatchesForPoll: function (poll) {
+            var deferred = $q.defer();
+
+            $http.get(apiUrl + 'api/Order/GetMatchesForPoll?pollId=' + poll.Id)
+            .then(function (response) {
+                deferred.resolve(response);
+            }, function (response) {
+                deferred.reject(response);
+            });
+
+            return deferred.promise;
         }
     };
 }]);

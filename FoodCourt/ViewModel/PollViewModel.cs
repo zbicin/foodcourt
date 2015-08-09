@@ -5,6 +5,7 @@ namespace FoodCourt.ViewModel
 {
     public class PollViewModel
     {
+        public Guid Id { get; set; }
         public string Group { get; set; }
 
         public string Remarks { get; set; }

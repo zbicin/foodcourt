@@ -22,22 +22,40 @@ namespace FoodCourt.Controllers
     public class OrderController : BaseApiController
     {
         [System.Web.Http.HttpGet]
-        public async Task<IHttpActionResult> GetListForPoll(Guid pollId)
+        public async Task<IHttpActionResult> GetMatchesForPoll(Guid pollId)
         {
-            var query = UnitOfWork.OrderRepository.GetForPoll(pollId);
+            var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind");
             List<Order> orders = query.ToList();
 
             OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
             matchHandler.ReduceAmountOfBaskets();
             matchHandler.BalanceBaskets();
 
-            return Ok(new List<Order>());
+            var viewModelQuery = matchHandler.ReducedBaskets.Select(b => new MatchedOrderViewModel()
+            {
+                Orders = b.Orders.Select(o => new OrderViewModel()
+                {
+                    RestaurantId = b.RestaurantId,
+                    Dish = o.Dish.Name,
+                    DishId = o.Dish.Id,
+                    Kind = o.Dish.Kind.Name,
+                    KindId = o.Dish.Kind.Id,
+                    IsHelpNeeded = o.IsHelpNeeded,
+                    Restaurant = o.Dish.Restaurant.Name,
+                    UserEmail = o.CreatedBy.Email
+                }).ToList(),
+                RestaurantId = b.RestaurantId
+            });
+
+            var viewModelList = viewModelQuery.ToList();
+
+            return Ok(viewModelList);
         }
 
 
         public async Task<IHttpActionResult> Put(CreateOrderViewModel order)
         {
-            Dish dish = await UnitOfWork.DishRepository.SingleOrDefault(order.DishId, false, "Restaurant");
+            Dish dish = await UnitOfWork.DishRepository.SingleOrDefault(order.DishId, false, "Restaurant,Kind");
             if (dish == null)
             {
                 return BadRequest("Wrong dish id.");

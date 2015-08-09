@@ -2,6 +2,8 @@
     $scope.kinds = [];
     $scope.restaurants = [];
     $scope.dishes = [];
+    $scope.matches = [];
+    $scope.poll = {};
 
     $scope.newOrder = {};
     clearNewOrder(); // sets default values
@@ -9,6 +11,7 @@
     $scope.getRestaurantsForKind = getRestaurantsForKind;
     $scope.getDishedForRestaurant = getDishedForRestaurant;
     $scope.processOrderForm = processOrderForm;
+    $scope.refreshMatches = refreshMatches;
 
     $scope.$watch('newOrder.kindId', function (newValue, oldValue) {
         if (newValue === oldValue) return;
@@ -40,8 +43,9 @@
         }
     });
 
-    PollService.tryGetCurrentPoll().then(function (poll) {
-        console.log(poll);
+    PollService.tryGetCurrentPoll().then(function (response) {
+        $scope.poll = response.data;
+        refreshMatches();
     }, function (error) {
         console.log(error);
         alert('Something went terribly wrong. See console for details.');
@@ -52,6 +56,7 @@
     }, function (error) {
         console.log(error);
     });
+
 
     // public ------
     function getRestaurantsForKind(kind) {
@@ -75,6 +80,15 @@
     function processOrderForm() {
         OrderService.add($scope.newOrder.dishId, $scope.newOrder.isHelpNeeded, $scope.newOrder.isOptional).then(function (response) {
             clearNewOrder();
+            refreshMatches();
+        }, function(error) {
+            console.log(error);
+        });
+    }
+
+    function refreshMatches() {
+        OrderService.getMatchesForPoll($scope.poll).then(function(response) {
+            $scope.matches = response.data;
         }, function(error) {
             console.log(error);
         });
