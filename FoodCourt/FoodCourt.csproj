@@ -1059,9 +1059,10 @@
     <Content Include="Views\Poll\_Form.cshtml" />
     <Content Include="Views\Poll\_Preview.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\EmailTemplate\Invite.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\EmailTemplates\" />
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using FoodCourt.Service.Mailer;
 using SendGrid;
 
 namespace FoodCourt.Service
@@ -25,7 +26,7 @@ namespace FoodCourt.Service
             var transport = new Web(_apiKey);
         }
 
-        public void Send()
+        public void Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
         {
             
         }

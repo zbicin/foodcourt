@@ -53,8 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mailer\EmailDTO.cs" />
     <Compile Include="OrderMatchHandler.cs" />
-    <Compile Include="Postman.cs" />
+    <Compile Include="Mailer\Postman.cs" />
     <Compile Include="Repository\DishRepository.cs" />
     <Compile Include="Repository\KindRepository.cs" />
     <Compile Include="Repository\IRestaurantRepository.cs" />
