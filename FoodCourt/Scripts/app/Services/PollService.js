@@ -1,33 +1,16 @@
 ﻿angular.module('FoodCourtApp').service('PollService', ['apiUrl', 'isDebug', '$http', '$q', function (apiUrl, isDebug, $http, $q) {
-    function basicGet(localUrl) {
-        var deferred = $q.defer();
-
-        $http.get(apiUrl + localUrl)
-        .then(function (response) {
-            deferred.resolve(response);
-        }, function (response) {
-            deferred.reject(response);
-        });
-
-        return deferred.promise;
-    }
-
-    function basicPost(localUrl, data) {
-        var deferred = $q.defer();
-
-        $http.post(apiUrl + localUrl, data)
-        .then(function (response) {
-            deferred.resolve(response);
-        }, function (response) {
-            deferred.reject(response);
-        });
-
-        return deferred.promise;
-    }
-
     return {
         tryGetCurrentPoll: function () {
-            return basicPost('Poll/TryGetCurrentPoll', {});
+            var deferred = $q.defer();
+
+            $http.post(apiUrl + 'Poll/TryGetCurrentPoll', {})
+            .then(function (response) {
+                deferred.resolve(response);
+            }, function (response) {
+                deferred.reject(response);
+            });
+
+            return deferred.promise;
         }
     };
 }]);
