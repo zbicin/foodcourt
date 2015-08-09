@@ -53,5 +53,7 @@ namespace FoodCourt.Model.Identity
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public ApplicationUser DeletedBy { get; set; }
+
+        public UserChangePasswordToken ChangePasswordToken { get; set; }
     }
 }

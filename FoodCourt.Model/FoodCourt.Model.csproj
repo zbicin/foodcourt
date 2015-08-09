@@ -67,6 +67,7 @@
     <Compile Include="Identity\IApplicationUser.cs" />
     <Compile Include="Identity\Role.cs" />
     <Compile Include="Identity\RoleStore.cs" />
+    <Compile Include="Identity\UserChangePasswordToken.cs" />
     <Compile Include="Identity\UserClaim.cs" />
     <Compile Include="Identity\UserLogin.cs" />
     <Compile Include="Identity\UserRole.cs" />

@@ -42,8 +42,8 @@
             $('#debug').click(function (e) {
                 e.preventDefault();
                 var randomPart = Math.floor((Math.random() * 100000000) + 1);
-                $('input[type=text]:eq(0)').val('user' + randomPart + '@@example.dummytld');
-                $('input[type=text]:eq(1)').val('guest1' + randomPart + '@@example.dummytld,guest2' + randomPart + '@@example.dummytld');
+                $('input[type=text]:eq(0)').val('user' + randomPart + '@@virti.eu');
+                $('input[type=text]:eq(1)').val('guest1' + randomPart + '@@virti.eu,guest2' + randomPart + '@@virti.eu');
                 $('input[type=text]:eq(2)').val('group ' + randomPart);
             });
         });

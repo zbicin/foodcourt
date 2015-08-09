@@ -40,7 +40,14 @@
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.1.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="RazorEngine">
+      <HintPath>..\packages\RazorEngine.3.7.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGridMail">
+      <HintPath>..\packages\Sendgrid.6.1.0\lib\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,8 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mailer\EmailDTO.cs" />
     <Compile Include="OrderMatchHandler.cs" />
+    <Compile Include="Mailer\Postman.cs" />
     <Compile Include="Repository\DishRepository.cs" />
+    <Compile Include="Repository\IUserChangePasswordTokenRepository.cs" />
     <Compile Include="Repository\KindRepository.cs" />
     <Compile Include="Repository\IRestaurantRepository.cs" />
     <Compile Include="Repository\IPollRepository.cs" />
@@ -59,6 +69,7 @@
     <Compile Include="Repository\ApplicationUserRepository.cs" />
     <Compile Include="Repository\BaseRepository.cs" />
     <Compile Include="Repository\RestaurantRepository.cs" />
+    <Compile Include="Repository\UserChangePasswordTokenRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Repository\IBaseRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />

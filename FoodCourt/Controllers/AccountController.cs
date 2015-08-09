@@ -12,6 +12,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using FoodCourt.Controllers.Base;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Web.Routing;
+using FoodCourt.Service;
+using FoodCourt.Service.Mailer;
 
 namespace FoodCourt.Controllers
 {
@@ -189,14 +193,58 @@ namespace FoodCourt.Controllers
                 var guest = new ApplicationUser { Email = singleEmail, UserName = singleEmail };
                 await UserManager.CreateAsync(guest);
                 guest = await UnitOfWork.UserAccountRepository.FindByEmailAsync(singleEmail);
+                guest.ChangePasswordToken = new UserChangePasswordToken();
+
                 guests.Add(guest);
             }
-
-            guests.Add(userEntity);
             var newGroup = new Model.Group(model.GroupName, guests);
             await UnitOfWork.GroupRepository.Insert(newGroup);
 
+            SendInvites(guests);
+
+            newGroup.ApplicationUsers.Add(userEntity);
+            await UnitOfWork.GroupRepository.Update(newGroup);
+
             return RedirectToAction("ChangePassword", "Manage");
+        }
+
+        public async Task<ActionResult> SignInByToken(Guid t)
+        {
+            ApplicationUser user = await UnitOfWork.UserAccountRepository.GetAll(false, "ChangePasswordToken").SingleOrDefaultAsync(u => u.ChangePasswordToken.Id == t);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            // sign in user
+            var result = await SignInManager.PasswordSignInAsync(user.Email, "password", true, false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("ChangePassword", "Manage");
+                default:
+                    return HttpNotFound("Invalid token.");
+            }
+        }
+
+        private void SendInvites(List<ApplicationUser> recipients)
+        {
+            UrlHelper urlHelper = new UrlHelper(this.ControllerContext.RequestContext);
+
+            List<EmailDTO> emailDtos = new List<EmailDTO>();
+            foreach (ApplicationUser recipient in recipients)
+            {
+                emailDtos.Add(new EmailDTO()
+                {
+                    GroupName = recipient.Group.Name,
+                    GroupOwner = CurrentUser.UserName,
+                    RecipientName = recipient.UserName,
+                    PasswordSetUrl = urlHelper.Action("SignInByToken", "Account", new { t = recipient.ChangePasswordToken.Id }, ControllerContext.RequestContext.HttpContext.Request.Url.Scheme)
+                });
+            }
+
+            Postman.Send("Invite", recipients.Select(r => r.Email).ToList(), emailDtos);
         }
 
         //

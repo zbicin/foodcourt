@@ -80,6 +80,11 @@ namespace FoodCourt.Service
         {
             get { return _restaurantRepository ?? (_restaurantRepository = new RestaurantRepository(this, CurrentUser)); }
         }
+        private IUserChangePasswordTokenRepository _userChangePasswordToken;
+        public IUserChangePasswordTokenRepository UserChangePasswordTokenRepository
+        {
+            get { return _userChangePasswordToken ?? (_userChangePasswordToken = new UserChangePasswordTokenRepository(this, CurrentUser)); }
+        }
         #endregion
         #region IDisposable
         private bool disposed = false;
