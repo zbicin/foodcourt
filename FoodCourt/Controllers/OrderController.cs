@@ -48,6 +48,7 @@ namespace FoodCourt.Controllers
             {
                 Orders = b.MatchedOrders.Select(o => new OrderViewModel()
                 {
+                    Id = o.Id,
                     RestaurantId = b.RestaurantId,
                     Dish = o.Dish.Name,
                     DishId = o.Dish.Id,
@@ -64,6 +65,7 @@ namespace FoodCourt.Controllers
             return Ok(viewModelList);
         }
 
+        [System.Web.Http.HttpDelete]
         public async Task<IHttpActionResult> Delete(Guid orderId)
         {
             Order order = await UnitOfWork.OrderRepository.Single(orderId, false, "CreatedBy, Poll");

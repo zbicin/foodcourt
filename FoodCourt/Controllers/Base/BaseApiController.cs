@@ -35,7 +35,7 @@ namespace FoodCourt.Controllers.Base
                     {
 
                         _currentUser =
-                            UnitOfWork.UserAccountRepository.GetAll(false, "Group").Single(u => u.Id == currentUserId);
+                            UnitOfWork.UserAccountRepository.GetAll(false, "Group,Group.CreatedBy").Single(u => u.Id == currentUserId);
                         UnitOfWork.SetCurrentUser(_currentUser);
                     }
                     catch (InvalidOperationException exception)

@@ -19,10 +19,9 @@
             return deferred.promise;
         },
         delete: function(orderId) {
-
             var deferred = $q.defer();
 
-            $http.delete(apiUrl + 'api/Order/Delete', orderId)
+            $http.delete(apiUrl + 'api/Order/Delete?orderId=' + orderId)
             .then(function (response) {
                 deferred.resolve(response);
             }, function (response) {
