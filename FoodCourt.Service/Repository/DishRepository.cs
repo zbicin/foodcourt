@@ -10,7 +10,7 @@ namespace FoodCourt.Service.Repository
         {
         }
 
-        public IQueryable<Dish> Search(string searchPhrase, string includes = "")
+        public IQueryable<Dish> Search(string searchPhrase, string includes = "", bool useExplicitComparison = false)
         {
             if (string.IsNullOrWhiteSpace(searchPhrase))
             {
@@ -18,7 +18,10 @@ namespace FoodCourt.Service.Repository
             }
 
             return
-                this.GetAll(false, includes)
+                useExplicitComparison 
+                ? this.GetAll(false, includes)
+                        .Where(k => k.Name == searchPhrase)
+                :this.GetAll(false, includes)
                     .Where(k => k.Name.Contains(searchPhrase));
         }
     }

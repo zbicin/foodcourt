@@ -4,7 +4,7 @@
         <label>Today, I'd like to have:</label>
         <div class="radio" ng-repeat="kind in kinds" ng-cloak>
             <label>
-                <input type="radio" ng-model="newOrder.kindId" value="{{ kind.Id }}" ng-click="getRestaurantsForKind(kind)" />
+                <input type="radio" ng-model="newOrder.kindId" value="{{ kind.Id }}" ng-click="getRestaurantsForKindId(kind.Id)" />
                 {{kind.Name}}
             </label>
         </div>
@@ -20,7 +20,7 @@
         <label>brought by:</label>
         <div class="radio" ng-repeat="restaurant in restaurants">
             <label>
-                <input type="radio" name="restaurant" ng-model="newOrder.restaurantId" value="{{restaurant.Id}}" ng-click="getDishedForRestaurant(restaurant)" />
+                <input type="radio" name="restaurant" ng-model="newOrder.restaurantId" value="{{restaurant.Id}}" ng-click="getDishesForRestaurantId(restaurant.Id)" />
                 {{restaurant.Name}}
                 <a ng-href="{{ restaurant.MenuUrl }}" ng-show="restaurant.MenuUrl != null" target="_blank">
                     <i class="glyphicon glyphicon-new-window"></i> See menu

@@ -9,8 +9,8 @@
     clearNewOrder(); // sets default values
 
     $scope.cancelOrder = cancelOrder;
-    $scope.getRestaurantsForKind = getRestaurantsForKind;
-    $scope.getDishedForRestaurant = getDishedForRestaurant;
+    $scope.getRestaurantsForKindId = getRestaurantsForKindId;
+    $scope.getDishesForRestaurantId = getDishesForRestaurantId;
     $scope.processOrderForm = processOrderForm;
     $scope.refreshMatches = refreshMatches;
     $scope.showAddDishPrompt = showAddDishPrompt;
@@ -68,8 +68,8 @@
         }
     }
 
-    function getRestaurantsForKind(kind) {
-        RestaurantService.getListForKindId(kind.Id).then(function (response) {
+    function getRestaurantsForKindId(kindId) {
+        RestaurantService.getListForKindId(kindId).then(function (response) {
             $scope.restaurants = response.data;
             $scope.newOrder.dishId = null;
             $scope.dishes = [];
@@ -78,8 +78,8 @@
         });
     }
 
-    function getDishedForRestaurant(restaurant) {
-        DishService.getListForKindIdAndRestaurantId($scope.newOrder.kindId, restaurant.Id).then(function (response) {
+    function getDishesForRestaurantId(restaurantId) {
+        DishService.getListForKindIdAndRestaurantId($scope.newOrder.kindId, restaurantId).then(function (response) {
             $scope.dishes = response.data;
         }, function (error) {
             console.log(error);
@@ -114,7 +114,11 @@
             }).then(function (response) {
                 $scope.dishes.push(response.data);
             }, function (error) {
-                console.log(error);
+                if (error.status === 409) {
+                    getDishesForRestaurantId($scope.newOrder.restaurantId);
+                } else {
+                    console.log(error);
+                }
             });
         }
     }
@@ -127,6 +131,11 @@
             }).then(function (response) {
                 $scope.kinds.push(response.data);
             }, function (error) {
+                if (error.status === 409) {
+                    getKinds();
+                } else {
+                    console.log(error);
+                }
                 console.log(error);
             });
         }
@@ -153,6 +162,11 @@
             }).then(function (response) {
                 $scope.restaurants.push(response.data);
             }, function (error) {
+                if (error.status === 409) {
+                    getRestaurantsForKindId($scope.newOrder.kindId);
+                } else {
+                    console.log(error);
+                }
                 console.log(error);
             });
         }
