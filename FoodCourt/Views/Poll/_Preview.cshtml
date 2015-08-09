@@ -9,7 +9,12 @@
     <ul>
         <li ng-repeat="order in match.Orders">
             {{ order.Dish }} for {{ order.UserEmail }}
-            <span ng-show="order.UserEmail === '@User.Identity.Name'" class="label label-info">Yours</span>
+            @if (ViewBag.IsAdminOfGroup)
+            {
+                <span ng-show="order.UserEmail === '@User.Identity.Name'" class="label label-info">Yours</span>
+            }
+            
+            <a href="#" ng-show="order.UserEmail === '@User.Identity.Name'" ng-click="cancelOrder(order)">I don't want it anymore </a>
         </li>
     </ul>
 </div>

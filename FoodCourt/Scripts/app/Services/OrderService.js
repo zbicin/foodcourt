@@ -18,6 +18,19 @@
 
             return deferred.promise;
         },
+        delete: function(orderId) {
+
+            var deferred = $q.defer();
+
+            $http.delete(apiUrl + 'api/Order/Delete', orderId)
+            .then(function (response) {
+                deferred.resolve(response);
+            }, function (response) {
+                deferred.reject(response);
+            });
+
+            return deferred.promise;
+        },
         getMatchesForPoll: function (poll) {
             var deferred = $q.defer();
 
