@@ -1069,6 +1069,8 @@
     <Content Include="Views\Poll\_Preview.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\EmailTemplate\Invite.cshtml" />
+    <Content Include="Views\EmailTemplate\OrderWarning.cshtml" />
+    <Content Include="Views\EmailTemplate\OrderNotification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

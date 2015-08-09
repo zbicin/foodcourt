@@ -61,6 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasketBalanceRankElement.cs" />
+    <Compile Include="Repository\IDishRepository.cs" />
+    <Compile Include="Repository\IGroupRepository.cs" />
+    <Compile Include="Repository\IKindRepository.cs" />
+    <Compile Include="Repository\IOrderRepository.cs" />
     <Compile Include="Mailer\EmailDTO.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="OrderBasket.cs" />

@@ -13,5 +13,7 @@ namespace FoodCourt.Service.Mailer
 
         public string RecipientName { get; set; }
         public string PasswordSetUrl { get; set; }
+        public string PollUrl { get; set; }
+        public List<OrderBasket> Baskets { get; set; }
     }
 }

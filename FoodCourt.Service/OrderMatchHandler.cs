@@ -10,15 +10,54 @@ namespace FoodCourt.Service
 {
     public class OrderMatchHandler
     {
-        public static List<OrderBasket> ProcessOrders(List<Order> orders)
+
+        private List<Order> _ordersPool;
+        private List<OrderBasket> _orderBaskets;
+        private List<OrderBasket> _originalBaskets;
+        private List<BasketBalanceRankElement> _balanceResults;
+        //private List<OrderBasket> _reducedBaskets;
+
+        public OrderMatchHandler(List<Order> ordersPool)
         {
-            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
-            matchHandler.ReduceAmountOfBaskets();
-            matchHandler.BalanceBaskets();
+            _ordersPool = ordersPool;
+            GroupOrdersIntoBaskets(_ordersPool);
+            //_reducedBaskets = new List<OrderBasket>();
+        }
 
-            matchHandler.PerformElection();
+        public List<OrderBasket> ProcessOrders()
+        {
+            // step 1
+            // group ALL orders by RestaurantId into baskets
 
-            return matchHandler._orderBaskets;
+            // step 2
+            // try to reduce amount of "baskets" starting from smallest basket
+
+            // step 3
+            // try to balance baskets mixing orders from step 1 & 2 starting from biggest basket
+            ReduceAmountOfBaskets();
+            BalanceBaskets();
+
+            PerformElection();
+
+            return _orderBaskets;
+        }
+
+        public List<OrderBasket> AddNotMatchedOrders()
+        {
+            var matchedOrderIds = _orderBaskets.SelectMany(b => b.MatchedOrders).Select(o => o.Id);
+
+            var baskets = new List<OrderBasket>();
+            baskets.AddRange(_orderBaskets);
+
+            // add not matched orders
+            var notGroupedOrders = _ordersPool.Where(o => matchedOrderIds.Contains(o.Id) == false).ToList();
+            baskets.Add(new OrderBasket()
+            {
+                MatchedOrders = notGroupedOrders,
+                IsNotMatched = true
+            });
+
+            return baskets;
         }
 
         private void PerformElection()
@@ -29,25 +68,6 @@ namespace FoodCourt.Service
             }
         }
 
-        // step 1
-        // group ALL orders by RestaurantId into baskets
-
-        // step 2
-        // try to reduce amount of "baskets" starting from smallest basket
-
-        // step 3
-        // try to balance baskets mixing orders from step 1 & 2 starting from biggest basket
-
-        private List<OrderBasket> _orderBaskets;
-        private List<OrderBasket> _originalBaskets;
-        private List<BasketBalanceRankElement> _balanceResults;
-        //private List<OrderBasket> _reducedBaskets;
-        
-        private OrderMatchHandler(List<Order> ordersPool)
-        {
-            GroupOrdersIntoBaskets(ordersPool);
-            //_reducedBaskets = new List<OrderBasket>();
-        }
 
         private void GroupOrdersIntoBaskets(List<Order> ordersPool)
         {

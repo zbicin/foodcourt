@@ -15,6 +15,7 @@ using FoodCourt.Lib;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
 using FoodCourt.Service;
+using FoodCourt.Service.Mailer;
 using FoodCourt.ViewModel;
 
 namespace FoodCourt.Controllers
@@ -84,7 +85,12 @@ namespace FoodCourt.Controllers
             }
 
             List<Order> orders = poll.Orders.ToList();
-            var matches = OrderMatchHandler.ProcessOrders(orders);
+
+            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+            matchHandler.ProcessOrders();
+
+            // add not matched orders
+            var matches = matchHandler.AddNotMatchedOrders();
 
             if (poll.IsFinished)
             {
@@ -96,9 +102,7 @@ namespace FoodCourt.Controllers
                 poll.IsResolved = true;
                 await UnitOfWork.PollRepository.Update(poll);
 
-                // send confirmations
-                SendNotifications(poll, orders);
-                UpdateLastOrderDates(matches);
+                ProcessFinishedPoll(poll, matches);
             }
             else
             {
@@ -109,33 +113,70 @@ namespace FoodCourt.Controllers
 
                 if (poll.IsResolved)
                 {
-                    SendNotifications(poll, orders);
-                    UpdateLastOrderDates(matches);
+                    ProcessFinishedPoll(poll, matches);
                 }
                 else
                 {
                     var singleOrders = matches.Where(o => o.MatchedOrders.Count() == 1)
-                        .SelectMany(o => o.MatchedOrders)
-                        .Select(o => o.Id).ToList();
+                        .SelectMany(o => o.MatchedOrders).ToList();
 
-                    SendFinalizeWarnings(poll, singleOrders);
+                    SendFinalizeWarnings(singleOrders);
                 }
             }
 
             return Json("");
         }
 
-        private void UpdateLastOrderDates(List<OrderBasket> matches)
+        private void ProcessFinishedPoll(Poll poll, List<OrderBasket> matches)
         {
-            throw new NotImplementedException();
+            SendNotifications(matches);
+            UpdateLastOrderDates(matches);
         }
 
-        private void SendFinalizeWarnings(Poll poll, List<Guid> singleOrders)
+        private async void UpdateLastOrderDates(List<OrderBasket> matches)
         {
+            foreach (OrderBasket orderBasket in matches)
+            {
+                ApplicationUser captain = orderBasket.Captain;
+                captain.LastOrderDate = DateTime.Now;
+
+                await UnitOfWork.UserAccountRepository.Update(captain);
+            }
         }
 
-        private void SendNotifications(Poll poll, List<Order> orders)
+        private void SendFinalizeWarnings(List<Order> singleOrders)
         {
+            UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
+            List<ApplicationUser> recipients = new List<ApplicationUser>();
+            List<EmailDTO> emailDtos = new List<EmailDTO>();
+
+            foreach (Order order in singleOrders)
+            {
+                ApplicationUser orderOwner = order.CreatedBy;
+                recipients.Add(orderOwner);
+
+                emailDtos.Add(new EmailDTO()
+                {
+                    PollUrl = urlHelper.Action("Index", "Poll")
+                });
+            }
+
+            Postman.Send("OrderWarning", recipients.Select(u => u.Email).ToList(), emailDtos);
+        }
+
+        private void SendNotifications(List<OrderBasket> baskets)
+        {
+            UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
+            List<ApplicationUser> recipients = new List<ApplicationUser>();
+            List<EmailDTO> emailDtos = new List<EmailDTO>();
+
+            emailDtos.Add(new EmailDTO()
+            {
+                PollUrl = urlHelper.Action("Index", "Poll"),
+                Baskets = baskets
+            });
+
+            Postman.Send("OrderNotification", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
 
         private IQueryable<PollViewModel> GetViewModelQuery(IQueryable<Poll> query)
