@@ -73,7 +73,12 @@ namespace FoodCourt.Controllers
             }
 
             List<Order> orders = poll.Orders.ToList();
-            var matches = OrderMatchHandler.ProcessOrders(orders);
+
+            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+            matchHandler.ProcessOrders();
+
+            // add not matched orders
+            var matches = matchHandler.AddNotMatchedOrders();
 
             if (poll.IsFinished)
             {
@@ -85,8 +90,7 @@ namespace FoodCourt.Controllers
                 poll.IsResolved = true;
                 await UnitOfWork.PollRepository.Update(poll);
 
-                // send confirmations
-                ProcessFinishedPoll(poll, orders, matches);
+                ProcessFinishedPoll(poll, matches);
             }
             else
             {
@@ -97,23 +101,23 @@ namespace FoodCourt.Controllers
 
                 if (poll.IsResolved)
                 {
-                    ProcessFinishedPoll(poll, orders, matches);
+                    ProcessFinishedPoll(poll, matches);
                 }
                 else
                 {
                     var singleOrders = matches.Where(o => o.MatchedOrders.Count() == 1)
                         .SelectMany(o => o.MatchedOrders).ToList();
 
-                    SendFinalizeWarnings(poll, singleOrders);
+                    SendFinalizeWarnings(singleOrders);
                 }
             }
 
             return Json("");
         }
 
-        private void ProcessFinishedPoll(Poll poll, List<Order> orders, List<OrderBasket> matches)
+        private void ProcessFinishedPoll(Poll poll, List<OrderBasket> matches)
         {
-            SendNotifications(poll, orders);
+            SendNotifications(matches);
             UpdateLastOrderDates(matches);
         }
 
@@ -128,8 +132,9 @@ namespace FoodCourt.Controllers
             }
         }
 
-        private void SendFinalizeWarnings(Poll poll, List<Order> singleOrders)
+        private void SendFinalizeWarnings(List<Order> singleOrders)
         {
+            UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
             List<ApplicationUser> recipients = new List<ApplicationUser>();
             List<EmailDTO> emailDtos = new List<EmailDTO>();
 
@@ -140,28 +145,24 @@ namespace FoodCourt.Controllers
 
                 emailDtos.Add(new EmailDTO()
                 {
-                    
+                    PollUrl = urlHelper.Action("Index", "Poll")
                 });
             }
 
             Postman.Send("OrderWarning", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
 
-        private void SendNotifications(Poll poll, List<Order> orders)
+        private void SendNotifications(List<OrderBasket> baskets)
         {
+            UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
             List<ApplicationUser> recipients = new List<ApplicationUser>();
             List<EmailDTO> emailDtos = new List<EmailDTO>();
 
-            foreach (Order order in orders)
+            emailDtos.Add(new EmailDTO()
             {
-                ApplicationUser orderOwner = order.CreatedBy;
-                recipients.Add(orderOwner);
-
-                emailDtos.Add(new EmailDTO()
-                {
-
-                });
-            }
+                PollUrl = urlHelper.Action("Index", "Poll"),
+                Baskets = baskets
+            });
 
             Postman.Send("OrderNotification", recipients.Select(u => u.Email).ToList(), emailDtos);
         }

@@ -1,0 +1,37 @@
+﻿@using FoodCourt.Model
+@using FoodCourt.Service
+@model FoodCourt.Service.Mailer.EmailDTO
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+    <div>
+        <p>The poll has been closed and resolved. The groups were formed as follows: </p>
+        @foreach (OrderBasket basket in Model.Baskets)
+        {
+            <p>
+                <strong>
+                    @basket.RestaurantName
+                </strong>
+            </p>
+    <ul>
+        @foreach (Order order in basket.MatchedOrders)
+        {
+            <li>
+                &quot;@order.Dish.Name&quot; for @order.CreatedBy.UserName
+                @if (basket.Captain.Id == order.CreatedBy.Id)
+                {
+                    @Html.Raw("- captain")
+                }
+            </li>
+        }
+    </ul>
+        }
+        <p>In urgent cases, contact the Captain of a group you were matched with.</p>
+        <p>To vote in another poll (i.e. tomorrow), <a href="@Model.PollUrl">just visit the Food Court</a>. New poll will be generated automatically.</p>
+    </div>
+</body>
+</html>

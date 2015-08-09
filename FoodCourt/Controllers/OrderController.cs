@@ -27,18 +27,11 @@ namespace FoodCourt.Controllers
             var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind");
             List<Order> orders = query.ToList();
 
-            var matches = OrderMatchHandler.ProcessOrders(orders);
-
-            // already matched order IDs
-            var matchedOrderIds = matches.SelectMany(b => b.MatchedOrders).Select(o => o.Id);
+            OrderMatchHandler matchHandler = new OrderMatchHandler(orders);
+            matchHandler.ProcessOrders();
 
             // add not matched orders
-            var notGroupedOrders = orders.Where(o => matchedOrderIds.Contains(o.Id) == false).ToList();
-            matches.Add(new OrderBasket()
-            {
-                MatchedOrders = notGroupedOrders,
-                IsNotMatched = true
-            });
+            var matches = matchHandler.AddNotMatchedOrders();
 
             var viewModelQuery = matches.Select(b => new MatchedOrderViewModel()
             {
