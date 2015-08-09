@@ -1,128 +1,73 @@
 ﻿
-<form class="form">
+<form class="form" ng-submit="processOrderForm()">
     <div class="form-group">
         <label>Today, I'd like to have:</label>
-        <div class="radio" ng-repeat="kind in kinds">
+        <div class="radio" ng-repeat="kind in kinds" ng-cloak>
             <label>
-                <input type="radio" ng-model="newOrder.kindId" value="{{ kind.Id }}" ng-click="fetchRestaurants()" />{{kind.Name}}
+                <input type="radio" ng-model="newOrder.kindId" value="{{ kind.Id }}" ng-click="getRestaurantsForKind(kind)" />
+                {{kind.Name}}
             </label>
         </div>
         <div>
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Something else</a>
+            <a href="#" ng-click="showAddKindPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="kinds.length > 0">Something else</span>
+                <span ng-show="kinds.length === 0">Add first kind (i.e. "Pizza", "Pasta")</span>
+            </a>
         </div>
     </div>
     <div class="form-group">
         <label>brought by:</label>
-        <div class="radio">
+        <div class="radio" ng-repeat="restaurant in restaurants">
             <label>
-                <input type="radio" name="deliverer" checked />Tommy Burger <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-                <a href="#" class="menu"><i class="glyphicon glyphicon-new-window"></i> See menu</a>
-
+                <input type="radio" name="restaurant" ng-model="newOrder.restaurantId" value="{{restaurant.Id}}" ng-click="getDishedForRestaurant(restaurant)" />
+                {{restaurant.Name}}
+                <a ng-href="{{ restaurant.MenuUrl }}" ng-show="restaurant.MenuUrl != null" target="_blank">
+                    <i class="glyphicon glyphicon-new-window"></i> See menu
+                </a>
             </label>
         </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="deliverer" />Jerry's Burger <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    2 weeks ago
-                </span>
-                <a href="#" class="menu"><i class="glyphicon glyphicon-new-window"></i> See menu</a>
-
-            </label>
+        <div ng-show="newOrder.kindId != null">
+            <a href="#" ng-click="showAddRestaurantPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="restaurants.length > 0">Someone else</span>
+                <span ng-show="restaurants.length === 0">Add first restaurant of "{{ newOrder.kind }}" type</span>
+            </a>
         </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="deliverer" />Whoever
-            </label>
-        </div>
-        <div>
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Someone else</a>
-
-        </div>
+        <p class="help-block" ng-show="newOrder.kindId === null">
+            (waiting for kind selection)
+        </p>
     </div>
     <div class="form-group">
         <label>and the dish is:</label>
-        <div class="radio">
+        <div class="radio" ng-repeat="dish in dishes">
             <label>
-                <input type="radio" name="dish" checked />Tradycyjny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3 weeks ago
-                </span>
-
+                <input type="radio" name="dish" ng-model="newOrder.dishId" ng-value="dish.Id" />
+                {{ dish.Name }}
             </label>
         </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
+        <div ng-show="newOrder.restaurantId != null">
+            <a href="#" ng-click="showAddDishPrompt()">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span ng-show="dishes.length > 0">Something else</span>
+                <span ng-show='dishes.length === 0'>Add first dish in restaurant "{{ newOrder.restaurant }}"</span>
+            </a>
         </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="dish" />Jakiś inny <span class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    3d ago
-                </span>
-
-            </label>
-        </div>
-        <div>
-            <a href="#" class="else"><i class="glyphicon glyphicon-plus"></i> Something else</a>
-
-        </div>
+        <p class="help-block" ng-show="newOrder.restaurantId === null">
+            (waiting for restaurant selection)
+        </p>
         <div class="checkbox">
             <label>
-                <input type="checkbox" /> I'd like to share it
+                <input type="checkbox" ng-model="newOrder.isHelpNeeded" /> I can't handle this dish myself. I'd like to share it.
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <input type="checkbox" /> I can have it optionally
+                <input type="checkbox" ng-model="newOrder.isOptional" /> I can have it optionally.
             </label>
         </div>
     </div>
-    <button class="btn btn-success">Add "Tradycyjny" Burger from "Tommy Burger" to today's wishlist</button>
-    <button class="btn btn-default">Cancel</button>
+    <button class="btn btn-success">
+        Add "{{ newOrder.dishId === null ? '(waiting for selection)' : newOrder.dish }}" from "{{ newOrder.restaurantId === null ? '(waiting for selection)': newOrder.restaurant }}" to today's wishlist
+    </button>
 </form>

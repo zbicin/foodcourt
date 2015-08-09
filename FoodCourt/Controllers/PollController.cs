@@ -48,7 +48,8 @@ namespace FoodCourt.Controllers
                 {
                     Group = CurrentGroup.Name,
                     IsFinished = false,
-                    IsResolved = false
+                    IsResolved = false,
+                    Id = newPoll.Id
                 };
             }
 
@@ -59,6 +60,7 @@ namespace FoodCourt.Controllers
         {
             return query.Select(p => new PollViewModel
             {
+                Id = p.Id,
                 Group = p.Group.Name,
 
                 Remarks = p.Remarks,

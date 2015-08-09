@@ -1,6 +1,14 @@
 ﻿<div>
-    <label>Live results</label>
+    <label>Matches so far</label>
+    <a href="#" class="btn btn-default" ng-click="refreshMatches()">Refresh</a>
     <a href="#" class="btn btn-default">Finish poll todo</a>
+</div>
 
-
+<div ng-repeat="match in matches">
+    <label>{{ match.Orders[0].Restaurant }}</label>
+    <ul>
+        <li ng-repeat="order in match.Orders">
+            {{ order.Dish }} for {{ order.UserEmail }}
+        </li>
+    </ul>
 </div>
