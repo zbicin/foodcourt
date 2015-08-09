@@ -8,7 +8,7 @@ using FoodCourt.Model.Identity;
 
 namespace FoodCourt.Service
 {
-    class OrderMatchHandler
+    public class OrderMatchHandler
     {
 
         // step 1
@@ -40,7 +40,7 @@ namespace FoodCourt.Service
 
         public void ReduceAmountOfBaskets()
         {
-            var basketsOrderedBySize = _orderBaskets.OrderBy(b => b.Orders.Count());
+            List<OrderBasket> basketsOrderedBySize = _orderBaskets.OrderBy(b => b.Orders.Count()).ToList();
 
             foreach (OrderBasket orderBasket in basketsOrderedBySize)
             {
@@ -65,7 +65,7 @@ namespace FoodCourt.Service
 
             if (reducedBasket.Orders.Any())
             {
-                _reducedBaskets.Add(orderBasket);
+                _reducedBaskets.Add(reducedBasket);
             }
         }
 
@@ -80,7 +80,7 @@ namespace FoodCourt.Service
 
         public void BalanceBaskets()
         {
-            var basketsOrderedBySize = _reducedBaskets.OrderByDescending(b => b.Orders.Count());
+            List<OrderBasket> basketsOrderedBySize = _reducedBaskets.OrderByDescending(b => b.Orders.Count()).ToList();
 
             foreach (OrderBasket orderBasket in basketsOrderedBySize)
             {
@@ -90,7 +90,10 @@ namespace FoodCourt.Service
 
         private void BalanceBasket(OrderBasket orderBasket)
         {
-            foreach (Order order in orderBasket.Orders)
+            Order[] orderListClone = new Order[orderBasket.Orders.Count];
+            orderBasket.Orders.CopyTo(orderListClone);
+
+            foreach (Order order in orderListClone)
             {
                 // did this user have order in other, currently smaller basket?
                 var orderOwner = order.CreatedBy;
@@ -110,7 +113,7 @@ namespace FoodCourt.Service
                     CleanupEmptyBaskets();
 
                     // and rewrite previously removed orders into smaller basket
-                    smallerBasket.Orders.Add(order);
+                    _reducedBaskets.Single(b => b.RestaurantId == smallerBasket.RestaurantId).Orders.Add(order);
                 }
             }
         }

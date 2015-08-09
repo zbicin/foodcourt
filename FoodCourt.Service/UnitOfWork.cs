@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using FoodCourt.Model;
 using FoodCourt.Model.Identity;
@@ -62,10 +63,10 @@ namespace FoodCourt.Service
             get { return (_kindRepository ?? (_kindRepository = new KindRepository(this, CurrentUser))); }
         }
 
-        private IBaseRepository<Order> _orderRepository;
+        private IOrderRepository _orderRepository;
         public IOrderRepository OrderRepository
         {
-            get { return (IOrderRepository)(_orderRepository ?? (_orderRepository = new BaseRepository<Order>(this, CurrentUser))); }
+            get { return (IOrderRepository)(_orderRepository ?? (_orderRepository = new OrderRepository(this, CurrentUser))); }
         }
 
         private IPollRepository _pollRepository;
@@ -101,5 +102,24 @@ namespace FoodCourt.Service
             GC.SuppressFinalize(this);
         }
         #endregion
+    }
+
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
+    {
+        public OrderRepository(IUnitOfWork unitOfWork, IApplicationUser currentUser) : base(unitOfWork, currentUser)
+        {
+        }
+
+        public IQueryable<Order> GetForPoll(Poll poll, string includes = "")
+        {
+            return GetForPoll(poll.Id, includes);
+        }
+
+        public IQueryable<Order> GetForPoll(Guid pollId, string includes = "")
+        {
+            var query = this.GetAll(false, "CreatedBy,Dish.Restaurant").Where(o => o.Poll.Id == pollId);
+            query = this.ResolveIncludes(includes, query);
+            return query;
+        }
     }
 }
