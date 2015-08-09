@@ -54,12 +54,7 @@
         alert('Something went terribly wrong. See console for details.');
     });
 
-    KindService.getList().then(function (response) {
-        $scope.kinds = response.data;
-    }, function (error) {
-        console.log(error);
-    });
-
+    getKinds();
 
     // public ------
     function getRestaurantsForKind(kind) {
@@ -84,6 +79,7 @@
         OrderService.add($scope.newOrder.dishId, $scope.newOrder.isHelpNeeded, $scope.newOrder.isOptional).then(function (response) {
             clearNewOrder();
             refreshMatches();
+            getKinds();
         }, function(error) {
             console.log(error);
         });
@@ -168,6 +164,11 @@
         $scope.restaurants = [];
     }
 
-    function addPositionPrompt(question, serviceResponsible, collectionOfElements) {
+    function getKinds() {
+        KindService.getList().then(function (response) {
+            $scope.kinds = response.data;
+        }, function (error) {
+            console.log(error);
+        });
     }
 }]);
