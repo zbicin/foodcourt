@@ -15,7 +15,6 @@ namespace FoodCourt.ViewModel
 
         public bool IsFinished { get; set; }
         public DateTime? FinishedAt { get; set; }
-
         public bool IsResolved { get; set; }
     }
 }
