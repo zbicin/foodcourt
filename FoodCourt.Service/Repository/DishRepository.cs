@@ -6,7 +6,8 @@ namespace FoodCourt.Service.Repository
 {
     public class DishRepository : BaseRepository<Dish>, IDishRepository
     {
-        public DishRepository(IUnitOfWork unitOfWork, IApplicationUser currentUser) : base(unitOfWork, currentUser)
+        public DishRepository(IUnitOfWork unitOfWork, IApplicationUser currentUser)
+            : base(unitOfWork, currentUser)
         {
         }
 
@@ -18,10 +19,10 @@ namespace FoodCourt.Service.Repository
             }
 
             return
-                useExplicitComparison 
-                ? this.GetAll(false, includes)
+                useExplicitComparison
+                ? GetAll(false, includes)
                         .Where(k => k.Name == searchPhrase)
-                :this.GetAll(false, includes)
+                : GetAll(false, includes)
                     .Where(k => k.Name.Contains(searchPhrase));
         }
     }

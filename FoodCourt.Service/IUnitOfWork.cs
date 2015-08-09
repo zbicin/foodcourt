@@ -34,7 +34,7 @@ namespace FoodCourt.Service
 
     public interface IKindRepository : IBaseRepository<Kind>
     {
-        IQueryable<Kind> Search(string searchPhrase, string includes = "");
+        IQueryable<Kind> Search(string searchPhrase, string includes = "", bool useExplicitComparison = false);
     }
 
     public interface IOrderRepository : IBaseRepository<Order>

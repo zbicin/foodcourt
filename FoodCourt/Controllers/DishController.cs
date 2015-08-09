@@ -58,36 +58,35 @@ namespace FoodCourt.Controllers
                 throw new InvalidOperationException("Could not create Dish without providing KindId.");
             }
 
-            var existingDish = UnitOfWork.DishRepository.Search(dish.Name, "Restaurant,Kind", true).FirstOrDefault();
+            var existingDish = UnitOfWork.DishRepository.Search(dish.Name, "Restaurant,Kind", true).FirstOrDefault(d => d.Restaurant.Id == dish.RestaurantId && d.Kind.Id == dish.KindId);
 
             if (existingDish != null)
             {
                 return Conflict();
             }
-            else
+
+            Dish newDish = new Dish()
             {
-                Dish newDish = new Dish()
-                {
-                    Restaurant = new Restaurant() { Id = dish.RestaurantId },
-                    Kind = new Kind() { Id = dish.KindId },
+                Restaurant = new Restaurant() { Id = dish.RestaurantId },
+                Kind = new Kind() { Id = dish.KindId },
 
-                    Name = dish.Name
-                };
+                Name = dish.Name
+            };
 
-                // attach restaurant & kind
-                UnitOfWork.Attach(newDish.Restaurant);
-                UnitOfWork.Attach(newDish.Kind);
+            // attach restaurant & kind
+            UnitOfWork.Attach(newDish.Restaurant);
+            UnitOfWork.Attach(newDish.Kind);
 
-                await UnitOfWork.DishRepository.Insert(newDish);
+            await UnitOfWork.DishRepository.Insert(newDish);
 
-                return Ok(new DishViewModel()
-                {
-                    Id = newDish.Id,
-                    Name = newDish.Name,
-                    KindId = newDish.Kind.Id,
-                    RestaurantId = newDish.Restaurant.Id
-                });
-            }
+            return Ok(new DishViewModel()
+            {
+                Id = newDish.Id,
+                Name = newDish.Name,
+                KindId = newDish.Kind.Id,
+                RestaurantId = newDish.Restaurant.Id
+            });
+
 
         }
     }

@@ -50,6 +50,13 @@ namespace FoodCourt.Controllers
                 PhoneNumber = restaurant.PhoneNumber
             };
 
+            var existingRestaurant = UnitOfWork.RestaurantRepository.Search(restaurant.Name, "", true).FirstOrDefault();
+
+            if (existingRestaurant != null)
+            {
+                return Conflict();
+            }
+
             await UnitOfWork.RestaurantRepository.Insert(newRestaurant);
 
             return Ok(new RestaurantViewModel()

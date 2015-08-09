@@ -40,6 +40,13 @@ namespace FoodCourt.Controllers
                 Name = kind.Name
             };
 
+            var existingKind = UnitOfWork.KindRepository.Search(kind.Name,"", true).FirstOrDefault();
+
+            if (existingKind != null)
+            {
+                return Conflict();
+            }
+
             await UnitOfWork.KindRepository.Insert(newKind);
 
             return Ok(new KindViewModel()

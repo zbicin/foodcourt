@@ -11,7 +11,7 @@ namespace FoodCourt.Service.Repository
         {
         }
 
-        public IQueryable<Kind> Search(string searchPhrase, string includes = "")
+        public IQueryable<Kind> Search(string searchPhrase, string includes = "", bool useExplicitComparison = false)
         {
             if (string.IsNullOrWhiteSpace(searchPhrase))
             {
@@ -19,7 +19,10 @@ namespace FoodCourt.Service.Repository
             }
 
             return
-                this.GetAll(false, includes)
+                useExplicitComparison
+                ? GetAll(false, includes)
+                        .Where(k => k.Name == searchPhrase)
+                : GetAll(false, includes)
                     .Where(k => k.Name.Contains(searchPhrase));
         }
     }
