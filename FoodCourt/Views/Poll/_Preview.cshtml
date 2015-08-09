@@ -9,6 +9,7 @@
     <ul>
         <li ng-repeat="order in match.Orders">
             {{ order.Dish }} for {{ order.UserEmail }}
+            <span ng-show="order.UserEmail === '@User.Identity.Name'" class="label label-info">Yours</span>
         </li>
     </ul>
 </div>
