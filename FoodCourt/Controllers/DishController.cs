@@ -58,27 +58,37 @@ namespace FoodCourt.Controllers
                 throw new InvalidOperationException("Could not create Dish without providing KindId.");
             }
 
-            Dish newDish = new Dish()
+            var existingDish = UnitOfWork.DishRepository.Search(dish.Name, "Restaurant,Kind", true).FirstOrDefault();
+
+            if (existingDish != null)
             {
-                Restaurant = new Restaurant() {Id = dish.RestaurantId},
-                Kind = new Kind() {Id = dish.KindId},
-
-                Name = dish.Name
-            };
-
-            // attach restaurant & kind
-            UnitOfWork.Attach(newDish.Restaurant);
-            UnitOfWork.Attach(newDish.Kind);
-
-            await UnitOfWork.DishRepository.Insert(newDish);
-
-            return Ok(new DishViewModel()
+                return Conflict();
+            }
+            else
             {
-                Id = newDish.Id,
-                Name = newDish.Name,
-                KindId = newDish.Kind.Id,
-                RestaurantId = newDish.Restaurant.Id
-            });
+                Dish newDish = new Dish()
+                {
+                    Restaurant = new Restaurant() { Id = dish.RestaurantId },
+                    Kind = new Kind() { Id = dish.KindId },
+
+                    Name = dish.Name
+                };
+
+                // attach restaurant & kind
+                UnitOfWork.Attach(newDish.Restaurant);
+                UnitOfWork.Attach(newDish.Kind);
+
+                await UnitOfWork.DishRepository.Insert(newDish);
+
+                return Ok(new DishViewModel()
+                {
+                    Id = newDish.Id,
+                    Name = newDish.Name,
+                    KindId = newDish.Kind.Id,
+                    RestaurantId = newDish.Restaurant.Id
+                });
+            }
+
         }
     }
 }
