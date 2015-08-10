@@ -24,7 +24,7 @@ namespace FoodCourt.Controllers
         [System.Web.Http.HttpGet]
         public async Task<IHttpActionResult> GetMatchesForPoll(Guid pollId)
         {
-            var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind");
+            var query = UnitOfWork.OrderRepository.GetForPoll(pollId, "Dish.Kind,CreatedBy");
             List<Order> orders = query.ToList();
 
             if (orders.Count > 0)
@@ -37,6 +37,7 @@ namespace FoodCourt.Controllers
 
                 var viewModelQuery = matches.Select(b => new MatchedOrderViewModel()
                 {
+                    Captain = b.Captain != null ? b.Captain.Email : null,
                     Orders = b.MatchedOrders.Select(o => new OrderViewModel()
                     {
                         Id = o.Id,

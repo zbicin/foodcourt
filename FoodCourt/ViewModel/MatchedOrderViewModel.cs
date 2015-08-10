@@ -9,5 +9,7 @@ namespace FoodCourt.ViewModel
     {
         public List<OrderViewModel> Orders { get; set; }
         public Guid RestaurantId { get; set; }
+
+        public string Captain { get; set; }
     }
 }

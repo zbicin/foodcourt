@@ -6,9 +6,9 @@
     <p class="text-muted" ng-show="!poll.IsFinished">
         It's first closing of the poll. Guests will still have a chance to alter their orders if they are not matched with any group.
     </p>
-        <p class="text-warning" ng-show="poll.IsFinished">
-            It's second closing of the poll. Guests will not have a chance to alter their orders anymore in this poll.
-        </p>
+    <p class="text-warning" ng-show="poll.IsFinished">
+        It's second closing of the poll. Guests will not have a chance to alter their orders anymore in this poll.
+    </p>
 }
 
 
@@ -18,10 +18,13 @@
 </div>
 
 <div ng-repeat="match in matches">
-    <label>{{ match.Orders[0].Restaurant }}</label>
+    <label>
+        {{ match.Orders[0].Restaurant }}
+    </label>
     <ul>
         <li ng-repeat="order in match.Orders">
             {{ order.Dish }} for
+            <i class="glyphicon glyphicon-star" ng-show="order.UserEmail === match.Captain"></i>
             <strong ng-show="order.UserEmail === '@User.Identity.Name'">You</strong>
             <span ng-show="order.UserEmail != '@User.Identity.Name'">{{ order.UserEmail }}</span>
 
