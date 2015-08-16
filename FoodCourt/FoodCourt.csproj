@@ -207,8 +207,22 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.overrides.css">
+      <DependentUpon>bootstrap.overrides.less</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.overrides.min.css">
+      <DependentUpon>bootstrap.overrides.css</DependentUpon>
+    </Content>
+    <Content Include="Content\loader.css">
+      <DependentUpon>loader.less</DependentUpon>
+    </Content>
+    <Content Include="Content\loader.min.css">
+      <DependentUpon>loader.css</DependentUpon>
+    </Content>
     <Content Include="Content\main.css">
       <DependentUpon>main.less</DependentUpon>
     </Content>
@@ -273,6 +287,21 @@
     <Content Include="Content\main.less" />
     <Content Include="Content\main.css.map">
       <DependentUpon>main.css</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.overrides.less" />
+    <Content Include="Content\_shared.less" />
+    <Content Include="Content\bootstrap.overrides.css.map">
+      <DependentUpon>bootstrap.overrides.css</DependentUpon>
+    </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\loader.less" />
+    <Content Include="Content\loader.css.map">
+      <DependentUpon>loader.css</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
@@ -1076,9 +1105,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>

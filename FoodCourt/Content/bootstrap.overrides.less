@@ -1,0 +1,61 @@
+﻿/*
+ * LESS file containing styles that override bootstrap classes only
+ */
+@import "_shared.less";
+
+.navbar-brand {
+    float: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Cabin;
+    padding: 0 15px;
+    font-size: 40px;
+    line-height: 1.2;
+    font-weight: 600;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: @primaryColor;
+    letter-spacing: -1.5px;
+    .transform(translate(-50%,-50%));
+}
+
+.navbar {
+    min-height: 70px;
+}
+
+.navbar-toggle {
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.navbar-collapse {
+    margin-top: 10px;
+}
+
+.container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.icon-bar {
+    // no idea why it's not present in bootstrap css
+    background: #222;
+}
+
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        left: 0;
+        text-align: center;
+        background: rgb(255, 255, 255);
+    }
+}
