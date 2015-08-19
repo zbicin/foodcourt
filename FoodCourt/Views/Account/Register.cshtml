@@ -5,21 +5,22 @@
 
 
 <div class="row">
-    <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 text-center">
+    <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-center">
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
         {
             @Html.AntiForgeryToken()
-            <h4>Create a new account.</h4>
+            <h4>Ultimate food-ordering debates solver</h4>
+            <h5>Catchy phrase that we'll make up</h5>
             <hr />
             @Html.ValidationSummary("", new { @class = "text-danger" })
             <div class="form-group">
-                @Html.TextBoxFor(m => m.AdminEmail, new { @class = "form-control", placeholder = "Your email" })
+                @Html.TextBoxFor(m => m.AdminEmail, new { @class = "form-control", placeholder = "Your email (i.e. johndoe@example.com)" })
             </div>
             <div class="form-group">
-                @Html.TextBoxFor(m => m.GuestsEmails, new { @class = "form-control", placeholder = "Emails of people to invite" })
+                @Html.TextBoxFor(m => m.GuestsEmails, new { @class = "form-control", placeholder = "Whom to invite? (i.e. emiliodoe@example.com,jennydoe@example.com)" })
             </div>
             <div class="form-group">
-                @Html.TextBoxFor(m => m.GroupName, new { @class = "form-control", placeholder = "Group name" })
+                @Html.TextBoxFor(m => m.GroupName, new { @class = "form-control", placeholder = "Group name (i.e. Northwest Office, Kickass Frontend Team or your company name)" })
             </div>
             <p>
                 <button type="submit" class="btn btn-success btn-lg">

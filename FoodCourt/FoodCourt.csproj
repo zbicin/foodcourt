@@ -217,12 +217,6 @@
     <Content Include="Content\bootstrap.overrides.min.css">
       <DependentUpon>bootstrap.overrides.css</DependentUpon>
     </Content>
-    <Content Include="Content\loader.css">
-      <DependentUpon>loader.less</DependentUpon>
-    </Content>
-    <Content Include="Content\loader.min.css">
-      <DependentUpon>loader.css</DependentUpon>
-    </Content>
     <Content Include="Content\main.css">
       <DependentUpon>main.less</DependentUpon>
     </Content>
@@ -299,10 +293,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\loader.less" />
-    <Content Include="Content\loader.css.map">
-      <DependentUpon>loader.css</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />

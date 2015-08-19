@@ -70,6 +70,7 @@ namespace FoodCourt.ViewModel
         public string AdminEmail { get; set; }
 
         [Required]
+        [RegularExpression(@"([a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+[, ]*)*", ErrorMessage = "Guest emails should be a comma-separated email list.")]
         public string GuestsEmails { get; set; }
         [Required]
         public string GroupName { get; set; }
