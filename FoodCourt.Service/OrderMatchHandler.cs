@@ -34,6 +34,7 @@ namespace FoodCourt.Service
 
             // step 3
             // try to balance baskets mixing orders from step 1 & 2 starting from biggest basket
+            
             ReduceAmountOfBaskets();
             BalanceBaskets();
 
@@ -80,8 +81,10 @@ namespace FoodCourt.Service
             return ordersPool.GroupBy(o => o.Dish.Restaurant.Id, o => o).Select(g => new OrderBasket()
             {
                 RestaurantId = g.Key,
-                MatchedOrders = g.ToList()
-            }).OrderBy(b => b.MatchedOrders.Count()).Select(o => o);
+                MatchedOrders = g.ToList(),
+                // sorry bout that combo, see AbilityToGetRidOf description to learn more
+                AbilityToGetRidOf = 1.0 * g.Count(r => ordersPool.Any(d => d.CreatedBy.Id == r.CreatedBy.Id && !g.Contains(d))) / g.Count()
+            }).OrderByDescending(b => b.AbilityToGetRidOf).ThenBy(b =>b.MatchedOrders.Count).Select(o => o);
         }
 
         public void ReduceAmountOfBaskets()
@@ -113,6 +116,7 @@ namespace FoodCourt.Service
                 }
             }
 
+            // REVIEW: it's always false
             if (reducedBasket.MatchedOrders.Any())
             {
                 _orderBaskets.Add(reducedBasket);

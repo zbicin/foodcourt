@@ -57,5 +57,10 @@ namespace FoodCourt.Model.Identity
         public ApplicationUser DeletedBy { get; set; }
 
         public UserChangePasswordToken ChangePasswordToken { get; set; }
+
+        public override string ToString()
+        {
+            return this.Email;
+        }
     }
 }

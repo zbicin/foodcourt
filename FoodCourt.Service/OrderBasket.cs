@@ -8,6 +8,14 @@ namespace FoodCourt.Service
 {
     public class OrderBasket
     {
+        /// <summary>
+        /// How harmful removing this basket will be.
+        /// Authors of all matched orders in this basket:
+        /// 1.0 - have placed orders in other baskets as well, we can get rid of this basket
+        /// 0.0 - haven't placed an order in any other basket, we can't get rid of this basket
+        /// (0.0, 1.0) - somewhere between
+        /// </summary>
+        public double AbilityToGetRidOf { get; set; }
         public Guid RestaurantId;
         public List<Order> MatchedOrders;
         public List<Order> PossibleOrders;
@@ -33,6 +41,11 @@ namespace FoodCourt.Service
         {
             MatchedOrders = new List<Order>();
             PossibleOrders = new List<Order>();
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0} ({1} matched, {2} possible)", this.RestaurantName, this.MatchedOrders.Count, this.PossibleOrders.Count);
         }
     }
 }

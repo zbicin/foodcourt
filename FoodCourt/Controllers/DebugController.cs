@@ -83,10 +83,11 @@ namespace FoodCourt.Controllers
             var result = new List<Order>();
             foreach (var user in users)
             {
-                var ordersCount = random.Next(1, maxOrdersPerUser);
+                var ordersCount = random.Next(1, maxOrdersPerUser+1);
                 for (var i = 0; i < ordersCount; i++)
                 {
                     var hasUserOrderedAnotherDishInThisRestaurant = false;
+                    int doIterations = 0; // cutout
                     Order newOrder;
                     do
                     {
@@ -102,10 +103,13 @@ namespace FoodCourt.Controllers
                             o.Dish.Restaurant.Id == newOrder.Dish.Restaurant.Id
                             && o.CreatedBy.Id == newOrder.CreatedBy.Id
                             );
+                        doIterations++;
+                    } while (hasUserOrderedAnotherDishInThisRestaurant && doIterations < 1000);
 
-                    } while (hasUserOrderedAnotherDishInThisRestaurant);
-
-                    result.Add(newOrder);
+                    if (doIterations < 1000)
+                    {
+                        result.Add(newOrder);                        
+                    }
                 }
             }
             return result;
@@ -115,7 +119,7 @@ namespace FoodCourt.Controllers
         {
             var result = new List<Dish>();
             var dishesCount = random.Next(1, dishesMaxCount + 1);
-            for (var i = 0; i < random.Next(1, dishesCount); i++)
+            for (var i = 0; i < dishesCount; i++)
             {
                 result.Add(new Dish()
                 {
@@ -133,7 +137,7 @@ namespace FoodCourt.Controllers
         {
             var result = new List<Kind>();
             var kindsCount = random.Next(1, kindsMaxCount + 1);
-            for (var i = 0; i < random.Next(1, kindsCount); i++)
+            for (var i = 0; i < kindsCount; i++)
             {
                 result.Add(new Kind()
                 {
@@ -149,7 +153,7 @@ namespace FoodCourt.Controllers
         {
             var result = new List<Restaurant>();
             var restaurantsCount = random.Next(1, restaurantsMaxCount + 1);
-            for (var i = 0; i < random.Next(1, restaurantsCount); i++)
+            for (var i = 0; i < restaurantsCount; i++)
             {
                 result.Add(new Restaurant()
                 {
@@ -166,7 +170,7 @@ namespace FoodCourt.Controllers
             using (var webClient = new WebClient())
             {
                 var result = new List<ApplicationUser>();
-                var usersCount = random.Next(3, usersMaxCount + 1);
+                var usersCount = random.Next(2, usersMaxCount + 1);
                 var randomuserMeResponse = JsonConvert.DeserializeObject<RandomuserMeViewModels.RandomuserMeResponse>(webClient.DownloadString(String.Format("https://randomuser.me/api/?results={0}", usersCount)));
 
                 return randomuserMeResponse.Results.Select(r => new ApplicationUser()
