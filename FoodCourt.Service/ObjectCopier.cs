@@ -31,7 +31,10 @@ namespace FoodCourt.Service
                 return default(T);
             }
 
-            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source));
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source, new JsonSerializerSettings()
+            {
+              ReferenceLoopHandling  = ReferenceLoopHandling.Ignore
+            }));
         }
     }
 }

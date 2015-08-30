@@ -23,7 +23,7 @@ namespace FoodCourt.Controllers
     [AuthorizeRedirectToRegister]
     public class PollController : BaseController
     {
-        private string[] _defaultKinds = new string[] {"Pizza", "Pasta", "Chinese", "Homemade", "Sushi"};
+        private string[] _defaultKinds = new string[] { "Pizza", "Pasta", "Chinese", "Homemade", "Sushi" };
 
         // GET: Poll
         public ActionResult Index()
@@ -64,7 +64,7 @@ namespace FoodCourt.Controllers
                 {
                     await UnitOfWork.KindRepository.Insert(new Kind()
                     {
-                        CreatedBy = (ApplicationUser) CurrentUser,
+                        CreatedBy = (ApplicationUser)CurrentUser,
                         Group = CurrentGroup,
                         CreatedAt = DateTime.Now,
                         Name = singleDefaultKind
@@ -77,7 +77,7 @@ namespace FoodCourt.Controllers
 
         public async Task<ActionResult> Finish()
         {
-            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders.Dish.Kind, Orders.Dish.Restaurant, CreatedBy").SingleAsync();
+            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders.Dish.Kind, Orders.Dish.Restaurant, Orders.CreatedBy, CreatedBy").SingleAsync();
 
             if (poll.CreatedBy.Id != CurrentUser.Id)
             {
@@ -104,16 +104,14 @@ namespace FoodCourt.Controllers
                 }
 
                 poll.IsResolved = true;
-                await UnitOfWork.PollRepository.Update(poll);
-
                 ProcessFinishedPoll(poll, matches);
+
+                await UnitOfWork.PollRepository.Update(poll);
             }
             else
             {
                 poll.IsFinished = true;
                 poll.IsResolved = matches.Any(m => m.MatchedOrders.Count() == 1) == false;
-
-                await UnitOfWork.PollRepository.Update(poll);
 
                 if (poll.IsResolved)
                 {
@@ -126,13 +124,15 @@ namespace FoodCourt.Controllers
 
                     SendFinalizeWarnings(singleOrders);
                 }
+
+                await UnitOfWork.PollRepository.Update(poll);
             }
 
             // TODO: make PollViewModel constructor that handles rewriting
             return Json(new PollViewModel()
             {
                 Id = poll.Id,
-                Group =  CurrentGroup.Name,
+                Group = CurrentGroup.Name,
                 Orders = null, // i'm too lazy
                 ETA = poll.ETA,
                 FinishedAt = poll.FinishedAt,
@@ -144,7 +144,8 @@ namespace FoodCourt.Controllers
 
         private void ProcessFinishedPoll(Poll poll, List<OrderBasket> matches)
         {
-            SendNotifications(matches);
+            var users = poll.Orders.Select(o => o.CreatedBy).Distinct().ToList();
+            SendNotifications(matches, users);
             UpdateLastOrderDates(matches);
         }
 
@@ -179,17 +180,20 @@ namespace FoodCourt.Controllers
             Postman.Send("OrderWarning", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
 
-        private void SendNotifications(List<OrderBasket> baskets)
+        private void SendNotifications(List<OrderBasket> baskets, List<ApplicationUser> users)
         {
             UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
-            List<ApplicationUser> recipients = new List<ApplicationUser>();
+            List<ApplicationUser> recipients = users;
             List<EmailDTO> emailDtos = new List<EmailDTO>();
 
-            emailDtos.Add(new EmailDTO()
+            for (var i = 0; i < recipients.Count; i++)
             {
-                PollUrl = urlHelper.Action("Index", "Poll"),
-                Baskets = baskets
-            });
+                emailDtos.Add(new EmailDTO()
+                {
+                    PollUrl = urlHelper.Action("Index", "Poll"),
+                    Baskets = baskets
+                });
+            }
 
             Postman.Send("OrderNotification", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
