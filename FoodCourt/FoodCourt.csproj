@@ -183,6 +183,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Base\BaseApiController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="Controllers\DebugController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="ViewModel\MatchedOrderViewModel.cs" />
     <Compile Include="ViewModel\CreateOrderViewModel.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Lib\AuthorizeRedirectToRegisterAttribute.cs" />
     <Compile Include="Controllers\RestaurantController.cs" />
+    <Compile Include="ViewModel\RandomuserMeViewModels.cs" />
     <Compile Include="ViewModel\RestaurantViewModel.cs" />
     <Compile Include="ViewModel\OrderViewModel.cs" />
     <Compile Include="Controllers\PollController.cs" />
@@ -1090,6 +1092,7 @@
     <Content Include="Views\EmailTemplate\Invite.cshtml" />
     <Content Include="Views\EmailTemplate\OrderWarning.cshtml" />
     <Content Include="Views\EmailTemplate\OrderNotification.cshtml" />
+    <Content Include="Views\Debug\AlgorithmTester.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

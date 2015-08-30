@@ -6,9 +6,6 @@ namespace FoodCourt.Model
 {
     public class Group : BaseEntity
     {
-        private string p;
-        private System.Linq.IQueryable queryable;
-
         public Group(string name, ICollection<ApplicationUser> applicationUsers)
         {
             this.Name = name;
