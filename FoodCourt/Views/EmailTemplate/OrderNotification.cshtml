@@ -17,18 +17,18 @@
                     @basket.RestaurantName
                 </strong>
             </p>
-    <ul>
-        @foreach (Order order in basket.MatchedOrders)
-        {
-            <li>
-                &quot;@order.Dish.Name&quot; for @order.CreatedBy.UserName
-                @if (basket.Captain.Id == order.CreatedBy.Id)
+            <ul>
+                @foreach (Order order in basket.MatchedOrders)
                 {
-                    @Html.Raw("- captain")
+                    <li>
+                        &quot;@order.Dish.Name&quot; for @order.CreatedBy.UserName
+                        @if (basket.Captain.Id == order.CreatedBy.Id)
+                        {
+                            @("- captain")
+                        }
+                    </li>
                 }
-            </li>
-        }
-    </ul>
+            </ul>
         }
         <p>In urgent cases, contact the Captain of a group you were matched with.</p>
         <p>To vote in another poll (i.e. tomorrow), <a href="@Model.PollUrl">just visit the Food Court</a>. New poll will be generated automatically.</p>

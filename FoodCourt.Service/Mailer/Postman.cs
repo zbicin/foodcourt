@@ -93,8 +93,16 @@ namespace FoodCourt.Service
 
             foreach (EmailDTO emailDto in emailDtos)
             {
-                string parsedTemplate = Engine.Razor.RunCompile(template, kind, typeof(EmailDTO), emailDto);
-                parsedTemplates.Add(parsedTemplate);
+                try
+                {
+                    string parsedTemplate = Engine.Razor.RunCompile(template, kind + DateTime.Now.Ticks,
+                        typeof (EmailDTO), emailDto);
+                    parsedTemplates.Add(parsedTemplate);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
 
             return parsedTemplates;

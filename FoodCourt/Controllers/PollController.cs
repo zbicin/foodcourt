@@ -96,6 +96,9 @@ namespace FoodCourt.Controllers
                 matches = matchHandler.AddNotMatchedOrders();
             }
 
+            // TODO: BUG, DIRTYFIX - find out why Kinds are being duplicated and get rid of this
+            var poll2 = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup).SingleAsync();
+
             if (poll.IsFinished)
             {
                 if (poll.IsResolved)
@@ -103,17 +106,18 @@ namespace FoodCourt.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Poll already closed");
                 }
 
-                poll.IsResolved = true;
+                poll2.IsResolved = true;
                 ProcessFinishedPoll(poll, matches);
 
-                await UnitOfWork.PollRepository.Update(poll);
+                await UnitOfWork.PollRepository.Update(poll2);
             }
             else
             {
-                poll.IsFinished = true;
-                poll.IsResolved = matches.Any(m => m.MatchedOrders.Count() == 1) == false;
+                poll2.IsFinished = true;
+                var zeroGuid = new Guid(0,0,0,0,0,0,0,0,0,0,0);
+                poll2.IsResolved = matches.Any(m => m.RestaurantId != zeroGuid && m.MatchedOrders.Count() == 1) == false;
 
-                if (poll.IsResolved)
+                if (poll2.IsResolved)
                 {
                     ProcessFinishedPoll(poll, matches);
                 }
@@ -125,7 +129,7 @@ namespace FoodCourt.Controllers
                     SendFinalizeWarnings(singleOrders);
                 }
 
-                await UnitOfWork.PollRepository.Update(poll);
+                await UnitOfWork.PollRepository.Update(poll2);
             }
 
             // TODO: make PollViewModel constructor that handles rewriting
@@ -154,9 +158,12 @@ namespace FoodCourt.Controllers
             foreach (OrderBasket orderBasket in matches)
             {
                 ApplicationUser captain = orderBasket.Captain;
-                captain.LastOrderDate = DateTime.Now;
+                if (captain != null)
+                {
+                    captain.LastOrderDate = DateTime.Now;
 
-                await UnitOfWork.UserAccountRepository.Update(captain);
+                    await UnitOfWork.UserAccountRepository.Update(captain);   
+                }
             }
         }
 
@@ -190,6 +197,7 @@ namespace FoodCourt.Controllers
             {
                 emailDtos.Add(new EmailDTO()
                 {
+                    RecipientName = recipients[i].Email,
                     PollUrl = urlHelper.Action("Index", "Poll"),
                     Baskets = baskets
                 });
