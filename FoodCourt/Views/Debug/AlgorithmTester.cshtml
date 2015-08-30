@@ -15,7 +15,7 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-6">
+    <div class="col-xs-6" id="orders">
         <h5>Orders</h5>
         <table class="table table-bordered">
             <thead>
@@ -39,7 +39,7 @@
             </tbody>
         </table>
     </div>
-    <div class="col-xs-6">
+    <div class="col-xs-6" id="matches">
         <h5>Matches (operation took: @ViewBag.Time)</h5>
 
         @foreach (var match in ViewBag.Matches)
@@ -70,3 +70,22 @@
         }
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var hoveringClass = 'info';
+            $('body').on('mouseover', '#matches td:contains(@@)', function() {
+                var thisTd = $(this);
+                thisTd.parent().addClass(hoveringClass);
+                $('#orders tr:contains(' + thisTd.text() + ')').addClass(hoveringClass);
+            }).on('mouseout', '#matches td:contains(@@)', function () {
+                var thisTd = $(this);
+                thisTd.parent().removeClass(hoveringClass);
+                $('#orders tr.' + hoveringClass).removeClass(hoveringClass);
+            });
+
+
+        });
+    </script>
+}
