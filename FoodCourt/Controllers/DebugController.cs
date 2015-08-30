@@ -17,7 +17,7 @@ namespace FoodCourt.Controllers
 {
     public class DebugController : Controller
     {
-        
+
         public ActionResult AlgorithmTester(int? kindsMaxCount, int? restaurantsMaxCount, int? dishesMaxCount, int? usersMaxCount, int? maxOrdersPerUser)
         {
             if (!kindsMaxCount.HasValue || !restaurantsMaxCount.HasValue || !dishesMaxCount.HasValue || !usersMaxCount.HasValue || !maxOrdersPerUser.HasValue)
@@ -28,6 +28,7 @@ namespace FoodCourt.Controllers
             var random = new Random();
             var group = new Group()
             {
+                Id = Guid.NewGuid(),
                 Name = "Guinea Pigs"
             };
             var users = GenerateRandomUsers(group, random, usersMaxCount.Value);
@@ -85,12 +86,26 @@ namespace FoodCourt.Controllers
                 var ordersCount = random.Next(1, maxOrdersPerUser);
                 for (var i = 0; i < ordersCount; i++)
                 {
-                    result.Add(new Order()
+                    var hasUserOrderedAnotherDishInThisRestaurant = false;
+                    Order newOrder;
+                    do
                     {
-                        Dish = dishes[random.Next(0, dishes.Count)],
-                        CreatedBy = users[random.Next(0, users.Count)],
-                        IsHelpNeeded = random.Next(0, 2) == 1
-                    });
+                        newOrder = new Order()
+                        {
+                            Id = Guid.NewGuid(),
+                            Dish = dishes[random.Next(0, dishes.Count)],
+                            CreatedBy = users[random.Next(0, users.Count)],
+                            IsHelpNeeded = random.Next(0, 2) == 1
+                        };
+
+                        hasUserOrderedAnotherDishInThisRestaurant = result.Any(o =>
+                            o.Dish.Restaurant.Id == newOrder.Dish.Restaurant.Id
+                            && o.CreatedBy.Id == newOrder.CreatedBy.Id
+                            );
+
+                    } while (hasUserOrderedAnotherDishInThisRestaurant);
+
+                    result.Add(newOrder);
                 }
             }
             return result;
@@ -104,6 +119,7 @@ namespace FoodCourt.Controllers
             {
                 result.Add(new Dish()
                 {
+                    Id = Guid.NewGuid(),
                     Group = group,
                     Name = String.Format("Dish #{0}", i),
                     Kind = kinds[random.Next(0, kinds.Count)],
@@ -121,6 +137,7 @@ namespace FoodCourt.Controllers
             {
                 result.Add(new Kind()
                 {
+                    Id = Guid.NewGuid(),
                     Group = group,
                     Name = String.Format("Kind #{0}", i)
                 });
@@ -154,6 +171,7 @@ namespace FoodCourt.Controllers
 
                 return randomuserMeResponse.Results.Select(r => new ApplicationUser()
                 {
+                    Id = Guid.NewGuid(),
                     UserName = r.User.Email,
                     Email = r.User.Email,
                     Group = group
