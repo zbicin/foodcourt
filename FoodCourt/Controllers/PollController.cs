@@ -96,41 +96,39 @@ namespace FoodCourt.Controllers
                 matches = matchHandler.AddNotMatchedOrders();
             }
 
-            // TODO: BUG, DIRTYFIX - find out why Kinds are being duplicated and get rid of this
-            var poll2 = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup).SingleAsync();
-
-            if (poll.IsFinished)
+            if (poll.IsFinished) // is it "second round"?
             {
                 if (poll.IsResolved)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Poll already closed");
                 }
 
-                poll2.IsResolved = true;
-                ProcessFinishedPoll(poll, matches);
-
-                await UnitOfWork.PollRepository.Update(poll2);
+                // to prevent "holding up" the poll, second attempt is always resolving it
+                poll.IsResolved = true;
+                ProcessResolvedPoll(poll, matches);
             }
             else
             {
-                poll2.IsFinished = true;
-                var zeroGuid = new Guid(0,0,0,0,0,0,0,0,0,0,0);
-                poll2.IsResolved = matches.Any(m => m.RestaurantId != zeroGuid && m.MatchedOrders.Count() == 1) == false;
+                poll.IsFinished = true;
 
-                if (poll2.IsResolved)
+                // mark poll as resolved only when there are no non-matched orders
+                poll.IsResolved = matches.Any(m => m.MatchedOrders.Count() == 1) == false;
+
+                if (poll.IsResolved)
                 {
-                    ProcessFinishedPoll(poll, matches);
+                    ProcessResolvedPoll(poll, matches);
                 }
                 else
                 {
                     var singleOrders = matches.Where(o => o.MatchedOrders.Count() == 1)
                         .SelectMany(o => o.MatchedOrders).ToList();
 
+                    // if poll is not resolved, notify owners of not-matched orders
                     SendFinalizeWarnings(singleOrders);
                 }
 
-                await UnitOfWork.PollRepository.Update(poll2);
             }
+            await UnitOfWork.PollRepository.Update(poll);
 
             // TODO: make PollViewModel constructor that handles rewriting
             return Json(new PollViewModel()
@@ -146,7 +144,7 @@ namespace FoodCourt.Controllers
             });
         }
 
-        private void ProcessFinishedPoll(Poll poll, List<OrderBasket> matches)
+        private void ProcessResolvedPoll(Poll poll, List<OrderBasket> matches)
         {
             var users = poll.Orders.Select(o => o.CreatedBy).Distinct().ToList();
             SendNotifications(matches, users);
