@@ -59,7 +59,8 @@ namespace FoodCourt.Controllers
                     IsResolved = false,
                     Id = newPoll.Id
                 };
-
+                /*
+                Why idea of adding new Kinds every time the poll is created instead of GROUP?
                 foreach (var singleDefaultKind in _defaultKinds)
                 {
                     await UnitOfWork.KindRepository.Insert(new Kind()
@@ -69,7 +70,7 @@ namespace FoodCourt.Controllers
                         CreatedAt = DateTime.Now,
                         Name = singleDefaultKind
                     });
-                }
+                }*/
             }
 
             return Json(currentPollViewModel, JsonRequestBehavior.AllowGet);

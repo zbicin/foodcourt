@@ -123,7 +123,7 @@ namespace FoodCourt.Service.Repository
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = (ApplicationUser)_currentUser;
 
-            Database.Entry(entity).State = EntityState.Modified;
+            //Database.Entry(entity).State = EntityState.Modified;
 
             return await Database.SaveChangesAsync();
         }
