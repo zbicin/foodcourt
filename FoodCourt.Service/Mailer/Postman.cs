@@ -69,7 +69,7 @@ namespace FoodCourt.Service
             }
         }
 
-        public void SendSingleMessage(string recipient, string subject, string messageBody)
+        public async Task<int> SendSingleMessage(string recipient, string subject, string messageBody)
         {
             SendGridMessage message = new SendGridMessage();
             message.From = new MailAddress(_sender);
@@ -78,7 +78,8 @@ namespace FoodCourt.Service
             message.Subject = subject;
             message.Html = messageBody;
 
-            Transport.DeliverAsync(message);
+            await Transport.DeliverAsync(message);
+            return 1;
         }
 
         private string RetrieveEmailSubject(string kind)
