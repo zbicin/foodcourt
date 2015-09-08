@@ -190,11 +190,15 @@ namespace FoodCourt.Controllers
             foreach (var singleEmail in splittedGuestEmails)
             {
                 var guest = new ApplicationUser { Email = singleEmail, UserName = singleEmail };
-                await UserManager.CreateAsync(guest);
-                guest = await UnitOfWork.UserAccountRepository.FindByEmailAsync(singleEmail);
-                guest.ChangePasswordToken = new UserChangePasswordToken();
+                IdentityResult result = await UserManager.CreateAsync(guest);
 
-                guests.Add(guest);
+                if (result.Succeeded)
+                {
+                    guest = await UnitOfWork.UserAccountRepository.FindByEmailAsync(singleEmail);
+                    guest.ChangePasswordToken = new UserChangePasswordToken();
+
+                    guests.Add(guest);
+                }
             }
             var newGroup = new Model.Group(model.GroupName, guests);
             await UnitOfWork.GroupRepository.Insert(newGroup);
@@ -462,8 +466,6 @@ namespace FoodCourt.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
