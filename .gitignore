@@ -198,3 +198,7 @@ FakesAssemblies/
 # DebugController
 !FoodCourt/Views/Debug
 !FoodCourt/Views/Debug/*
+
+FoodCourt/Web.config
+FoodCourt/Web.Debug.config
+FoodCourt/Web.Release.config
