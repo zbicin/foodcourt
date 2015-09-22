@@ -31,3 +31,16 @@
     background-image: -moz-image-set(url(@src) 1x, url(@src2x) 2x, url(@src3x) 3x, url(@src4x) 4x);
     background-image: -o-image-set(url(@src) 1x, url(@src2x) 2x, url(@src3x) 3x, url(@src4x) 4x);
 }
+
+.keyframes(@name; @arguments) {
+	@-moz-keyframes @name { @arguments(); }
+	@-webkit-keyframes @name { @arguments(); }
+	@keyframes @name { @arguments(); }
+}
+
+.animation(@arguments) {
+    -webkit-animation: @arguments;
+    -moz-animation: @arguments;
+    -o-animation: @arguments;
+    animation: @arguments;
+}
