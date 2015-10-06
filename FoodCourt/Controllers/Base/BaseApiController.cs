@@ -88,7 +88,7 @@ namespace FoodCourt.Controllers.Base
             this._disposed = true;
         }
 
-        public new void Dispose()
+        protected new void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
