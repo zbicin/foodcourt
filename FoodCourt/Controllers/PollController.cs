@@ -106,18 +106,18 @@ namespace FoodCourt.Controllers
 
                 // to prevent "holding up" the poll, second attempt is always resolving it
                 poll.IsResolved = true;
-                ProcessResolvedPoll(poll, matches);
+                await ProcessResolvedPoll(poll, matches);
             }
             else
             {
                 poll.IsFinished = true;
 
                 // mark poll as resolved only when there are no non-matched orders
-                poll.IsResolved = matches.Any(m => m.MatchedOrders.Count() == 1) == false;
+                poll.IsResolved = matches.Any(m => m.IsNotMatched == false && m.MatchedOrders.Count() == 1) == false;
 
                 if (poll.IsResolved)
                 {
-                    ProcessResolvedPoll(poll, matches);
+                    await ProcessResolvedPoll(poll, matches);
                 }
                 else
                 {
@@ -145,14 +145,14 @@ namespace FoodCourt.Controllers
             });
         }
 
-        private void ProcessResolvedPoll(Poll poll, List<OrderBasket> matches)
+        private async Task ProcessResolvedPoll(Poll poll, List<OrderBasket> matches)
         {
             var users = poll.Orders.Select(o => o.CreatedBy).Distinct().ToList();
             SendNotifications(matches, users);
-            UpdateLastOrderDates(matches);
+            await UpdateLastOrderDates(matches);
         }
 
-        private async void UpdateLastOrderDates(List<OrderBasket> matches)
+        private async Task UpdateLastOrderDates(List<OrderBasket> matches)
         {
             foreach (OrderBasket orderBasket in matches)
             {
