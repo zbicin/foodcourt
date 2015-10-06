@@ -25,6 +25,8 @@
                 <a ng-href="{{ restaurant.MenuUrl }}" ng-show="restaurant.MenuUrl != null" target="_blank">
                     <i class="glyphicon glyphicon-new-window"></i> See menu
                 </a>
+                <a href="#" ng-show="restaurant.MenuUrl == null" ng-click="showAddRestaurantMenuUrlPrompt(restaurant)"><i class="glyphicon glyphicon-pencil"></i> Add menu URL</a>
+                <a href="#" ng-show="restaurant.PhoneNumber == null" ng-click="showAddRestaurantPhoneNumberPrompt(restaurant)"><i class="glyphicon glyphicon-pencil"></i> Add a phone number</a>
             </label>
         </div>
         <div ng-show="newOrder.kindId != null">

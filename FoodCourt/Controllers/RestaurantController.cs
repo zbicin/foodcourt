@@ -27,15 +27,9 @@ namespace FoodCourt.Controllers
                     .Where(d => d.Kind.Id == kindId)
                     .Select(d => d.Restaurant.Id);
             var query = UnitOfWork.RestaurantRepository.Search(searchPhrase).Where(r => restaurantIds.Contains(r.Id));
-            var viewModelQuery = query.Select(r => new RestaurantViewModel()
-            {
-                Id = r.Id,
-                Name = r.Name,
-                PhoneNumber = r.PhoneNumber,
-                MenuUrl = r.MenuUrl
-            });
+            var list = await query.ToListAsync();
 
-            var viewModelList = await viewModelQuery.ToListAsync();
+            var viewModelList = list.Select(r => new RestaurantViewModel(r));
 
             return Ok(viewModelList);
         }
@@ -44,11 +38,9 @@ namespace FoodCourt.Controllers
         {
             Restaurant newRestaurant = new Restaurant()
             {
-                Group = CurrentGroup,
-                MenuUrl = restaurant.MenuUrl,
-                Name = restaurant.Name,
-                PhoneNumber = restaurant.PhoneNumber
+                Group = CurrentGroup
             };
+            restaurant.UpdateModel(newRestaurant);
 
             var existingRestaurant = UnitOfWork.RestaurantRepository.Search(restaurant.Name, "Group", true)
                 .FirstOrDefault(r => r.Group.Id == CurrentGroup.Id);
@@ -60,18 +52,25 @@ namespace FoodCourt.Controllers
 
             await UnitOfWork.RestaurantRepository.Insert(newRestaurant);
 
-            return Ok(new RestaurantViewModel()
-            {
-                Id = newRestaurant.Id,
-                MenuUrl = newRestaurant.MenuUrl,
-                Name = newRestaurant.Name,
-                PhoneNumber = newRestaurant.PhoneNumber
-            });
+            return Ok(new RestaurantViewModel(newRestaurant));
         }
 
-        public async Task<IHttpActionResult> Post(RestaurantViewModel restaurant)
+        
+        public async Task<IHttpActionResult> Update(RestaurantViewModel restaurant)
         {
-            throw new NotImplementedException();
+            var existingRestaurant = UnitOfWork.RestaurantRepository.Search(restaurant.Name, "Group", true)
+                .FirstOrDefault(r => r.Group.Id == CurrentGroup.Id);
+
+            if (existingRestaurant == null)
+            {
+                return NotFound();
+            }
+
+            restaurant.UpdateModel(existingRestaurant);
+
+            await UnitOfWork.RestaurantRepository.Update(existingRestaurant);
+
+            return Ok(new RestaurantViewModel(existingRestaurant));
         }
     }
 }

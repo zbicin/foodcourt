@@ -30,6 +30,18 @@
                 });
 
                 return deferred.promise;
+            },
+            update: function(restaurant) {
+                var deferred = $q.defer();
+
+                $http.post(apiUrl + 'api/Restaurant/Update', restaurant)
+                .then(function (response) {
+                    deferred.resolve(response);
+                }, function (response) {
+                    deferred.reject(response);
+                });
+
+                return deferred.promise;
             }
         };
     }

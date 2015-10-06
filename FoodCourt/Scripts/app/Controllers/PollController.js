@@ -17,6 +17,8 @@
     $scope.showAddDishPrompt = showAddDishPrompt;
     $scope.showAddKindPrompt = showAddKindPrompt;
     $scope.showAddRestaurantPrompt = showAddRestaurantPrompt;
+    $scope.showAddRestaurantMenuUrlPrompt = showAddRestaurantMenuUrlPrompt;
+    $scope.showAddRestaurantPhoneNumberPrompt = showAddRestaurantPhoneNumberPrompt;
 
     $scope.$watch('newOrder.kindId', function (newValue, oldValue) {
         if (newValue === oldValue) return;
@@ -162,23 +164,48 @@
     function showAddRestaurantPrompt() {
         var name = prompt('Give name of new restaurant (i.e. \"Da Grasso Zachodnia\", \"Ha Long Piotrkowska\")');
         if (name) {
-            var phoneNumber = prompt('Give a contact number to \"' + name + '\", it will simplify the ordering process. You can leave this field blank.');
-            var menuUrl = prompt('Give a url to the menu of \"' + name + '\". You can leave this field blank.');
-
-            if (!phoneNumber) {
-                phoneNumber = null;
-            }
-
-            if (!menuUrl) {
-                menuUrl = null;
-            }
-
             RestaurantService.put({
-                MenuUrl: menuUrl,
-                Name: name,
-                PhoneNumber: phoneNumber
+                Name: name
             }).then(function (response) {
                 $scope.restaurants.push(response.data);
+            }, function (error) {
+                if (error.status === 409) {
+                    getRestaurantsForKindId($scope.newOrder.kindId);
+                } else {
+                    console.log(error);
+                }
+                console.log(error);
+            });
+        }
+    }
+
+    function showAddRestaurantPhoneNumberPrompt(restaurant) {
+        var phoneNumber = prompt('Give a contact number to \"' + restaurant.Name + '\", it will simplify the ordering process. You can leave this field blank.');
+        
+        if (phoneNumber) {
+            restaurant.PhoneNumber = phoneNumber;
+
+            RestaurantService.update(restaurant).then(function (response) {
+                restaurant = response.data;
+            }, function (error) {
+                if (error.status === 409) {
+                    getRestaurantsForKindId($scope.newOrder.kindId);
+                } else {
+                    console.log(error);
+                }
+                console.log(error);
+            });
+        }
+    }
+
+    function showAddRestaurantMenuUrlPrompt(restaurant) {
+        var menuUrl = prompt('Give a url to the menu of \"' + restaurant.Name + '\". You can leave this field blank.');
+
+        if (menuUrl) {
+            restaurant.MenuUrl = menuUrl;
+
+            RestaurantService.update(restaurant).then(function (response) {
+                restaurant = response.data;
             }, function (error) {
                 if (error.status === 409) {
                     getRestaurantsForKindId($scope.newOrder.kindId);
