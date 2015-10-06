@@ -31,7 +31,11 @@
                 or
                 <a href="@Url.Action("LogIn", "Account")">log in to an existing poll</a>.
             </p>
-            <p><a href="#" id="debug">Debug</a></p>
+            <p>
+                Debug:
+                <a href="#" id="debugVirti">Virti</a>,
+                <a href="#" id="debugFistasheq">Fistasheq</a>.
+            </p>
         }
     </div>
 </div>
@@ -40,12 +44,19 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
-            $('#debug').click(function (e) {
+            $('#debugVirti').click(function (e) {
                 e.preventDefault();
                 var randomPart = Math.floor((Math.random() * 100000000) + 1);
                 $('input[type=text]:eq(0)').val('user' + randomPart + '@@virti.eu');
                 $('input[type=text]:eq(1)').val('guest1' + randomPart + '@@virti.eu,guest2' + randomPart + '@@virti.eu');
                 $('input[type=text]:eq(2)').val('group ' + randomPart);
+            });
+            $('#debugFistasheq').click(function (e) {
+                e.preventDefault();
+                var randomPart = Math.floor((Math.random() * 100000000) + 1);
+                $('input[type=text]:eq(0)').val('fistasheq+user' + randomPart + '@@gmail.com');
+                $('input[type=text]:eq(1)').val('fistasheq+guest1' + randomPart + '@@gmail.com,fistasheq+guest2' + randomPart + '@@gmail.com');
+                $('input[type=text]:eq(2)').val('fistasheq+group ' + randomPart);
             });
         });
     </script>
