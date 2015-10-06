@@ -121,7 +121,7 @@ namespace FoodCourt.Controllers
                 }
                 else
                 {
-                    var singleOrders = matches.Where(o => o.MatchedOrders.Count() == 1)
+                    var singleOrders = matches.Where(o => o.MatchedOrders.Count() == 1 && o.IsNotMatched == false)
                         .SelectMany(o => o.MatchedOrders).ToList();
 
                     // if poll is not resolved, notify owners of not-matched orders
