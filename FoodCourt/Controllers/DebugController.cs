@@ -10,13 +10,42 @@ using FoodCourt.Model.Identity;
 using FoodCourt.Service;
 using FoodCourt.ViewModel;
 using System.Net;
+using System.Web.Http;
 using System.Web.Routing;
+using FoodCourt.Lib;
 using Newtonsoft.Json;
+using FoodCourt.Controllers.Base;
+using FoodCourt.Service.Mailer;
 
 namespace FoodCourt.Controllers
 {
-    public class DebugController : Controller
+    public class DebugController : BaseController
     {
+        public ActionResult EmailTester()
+        {
+            return View(new EmailTesterViewModel());
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public ActionResult EmailTester(EmailTesterViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var emailDto = new EmailDTO()
+                {
+                    RecipientName = "Dummy recipient name",
+                    Baskets = new List<OrderBasket>(){},
+                    GroupName = "Guinea pigs",
+                    GroupOwner = viewModel.Email,
+                    PasswordSetUrl = "http://google.com",
+                    PollUrl = "http://google.com"
+                };
+                Postman.Send(viewModel.Kind, new List<string>() { viewModel.Email }, new List<EmailDTO>() { emailDto });
+            }
+
+            ViewBag.IsSent = true;
+            return View(viewModel);
+        }
 
         public ActionResult AlgorithmTester(int? kindsMaxCount, int? restaurantsMaxCount, int? dishesMaxCount, int? usersMaxCount, int? maxOrdersPerUser)
         {
@@ -83,7 +112,7 @@ namespace FoodCourt.Controllers
             var result = new List<Order>();
             foreach (var user in users)
             {
-                var ordersCount = random.Next(1, maxOrdersPerUser+1);
+                var ordersCount = random.Next(1, maxOrdersPerUser + 1);
                 for (var i = 0; i < ordersCount; i++)
                 {
                     var hasUserOrderedAnotherDishInThisRestaurant = false;
@@ -108,7 +137,7 @@ namespace FoodCourt.Controllers
 
                     if (doIterations < 1000)
                     {
-                        result.Add(newOrder);                        
+                        result.Add(newOrder);
                     }
                 }
             }

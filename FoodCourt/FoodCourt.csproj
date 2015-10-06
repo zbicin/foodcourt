@@ -185,6 +185,7 @@
     <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\DebugController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="ViewModel\EmailTesterViewModel.cs" />
     <Compile Include="ViewModel\MatchedOrderViewModel.cs" />
     <Compile Include="ViewModel\CreateOrderViewModel.cs" />
     <Compile Include="Controllers\DishController.cs" />
@@ -1096,6 +1097,7 @@
     <Content Include="Views\EmailTemplate\OrderWarning.cshtml" />
     <Content Include="Views\EmailTemplate\OrderNotification.cshtml" />
     <Content Include="Views\Debug\AlgorithmTester.cshtml" />
+    <Content Include="Views\Debug\EmailTester.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1147,11 +1149,9 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-  </Target> --> 
-  
+  </Target> -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" />
-<Target Name="BeforeBuild" Condition="'$(PublishProfileName)' == '' And '$(WebPublishProfileFile)' == ''">
+  <Target Name="BeforeBuild" Condition="'$(PublishProfileName)' == '' And '$(WebPublishProfileFile)' == ''">
     <TransformXml Source="Web.Base.config" Transform="Web.$(Configuration).config" Destination="Web.config" />
-</Target>
-  
+  </Target>
 </Project>

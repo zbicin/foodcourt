@@ -20,9 +20,6 @@
                 <a class="navbar-brand" href="/">foodcourt</a>
             </div>
             <div class="navbar-collapse collapse">
-                @*<ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Algorithm Tester", "AlgorithmTester", "Debug")</li>
-                </ul>*@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -33,6 +30,7 @@
         <footer class="text-center">
             <p>&copy; @DateTime.Now.Year - Food Court</p>
             <p>@Html.ActionLink("Algorithm Tester", "AlgorithmTester", "Debug")</p>
+            <p>@Html.ActionLink("Email Tester", "EmailTester", "Debug")</p>
         </footer>
     </div>
 

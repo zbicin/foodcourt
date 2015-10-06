@@ -1,0 +1,55 @@
+﻿@model FoodCourt.ViewModel.EmailTesterViewModel
+@{
+    ViewBag.Title = "Email Tester";
+}
+
+
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-center">
+        @if (ViewBag.IsSent == true)
+        {
+            <div class="alert alert-info">
+                <p>Email has been successfully* sent.</p>
+                <p>
+                    <small>* probably</small>
+                </p>
+            </div>
+        }
+
+        @using (Html.BeginForm("EmailTester", "Debug", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.ValidationSummary()
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Your email (i.e. johndoe@example.com)" })
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.Kind)
+            </div>
+
+            <p>
+                <button type="submit" class="btn btn-success btn-lg" data-kind="Invite">
+                    Send Invite
+                </button>
+                <button type="submit" class="btn btn-success btn-lg" data-kind="OrderNotification">
+                    Send OrderNotification
+                </button>
+                <button type="submit" class="btn btn-success btn-lg" data-kind="OrderWarning">
+                    Send OrderWarning
+                </button>
+            </p>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('button[type=submit]').click(function (e) {
+                e.preventDefault();
+                var self = $(this);
+                $('#Kind').val(self.data('kind'));
+                self.closest('form').submit();
+            });
+        });
+    </script>
+}
