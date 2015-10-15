@@ -71,6 +71,11 @@ namespace FoodCourt.Service
 
         public async Task<int> SendSingleMessage(string recipient, string subject, string messageBody)
         {
+            if (String.IsNullOrEmpty(subject))
+            {
+                throw new ArgumentException("Subject cannot be empty. Such a message would be silently rejected by SendGrid.");
+            }
+
             SendGridMessage message = new SendGridMessage();
             message.From = new MailAddress(_sender);
             message.AddTo(recipient);
