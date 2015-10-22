@@ -32,6 +32,7 @@ namespace FoodCourt
                 .IncludeDirectory("~/Scripts/app", "*.js", true));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                      "~/Content/imports.css",
                       "~/Content/bootstrap.css",
                       "~/Content/bootstrap.overrides.css",
                       "~/Scripts/angular-csp.css",
