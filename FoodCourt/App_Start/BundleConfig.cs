@@ -29,7 +29,14 @@ namespace FoodCourt
                        "~/Scripts/angular-ui/ui-bootstrap-tpls.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular/app")
-                .IncludeDirectory("~/Scripts/app", "*.js", true));
+                .Include("~/Scripts/app/App.js")
+#if DEBUG
+                .Include("~/Scripts/app/Values.Debug.js")
+#else
+                .Include("~/Scripts/app/Values.Release.js")
+#endif
+                .IncludeDirectory("~/Scripts/app/Controllers", "*.js", true)
+                .IncludeDirectory("~/Scripts/app/Services", "*.js", true));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/imports.css",
