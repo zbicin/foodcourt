@@ -125,7 +125,7 @@ namespace FoodCourt.Controllers
                         .SelectMany(o => o.MatchedOrders).ToList();
 
                     // if poll is not resolved, notify owners of not-matched orders
-                    SendFinalizeWarnings(singleOrders);
+                    await SendFinalizeWarnings(singleOrders);
                 }
 
             }
@@ -148,7 +148,7 @@ namespace FoodCourt.Controllers
         private async Task ProcessResolvedPoll(Poll poll, List<OrderBasket> matches)
         {
             var users = poll.Orders.Select(o => o.CreatedBy).Distinct().ToList();
-            SendNotifications(matches, users);
+            await SendNotifications(matches, users);
             await UpdateLastOrderDates(matches);
         }
 
@@ -166,7 +166,7 @@ namespace FoodCourt.Controllers
             }
         }
 
-        private void SendFinalizeWarnings(List<Order> singleOrders)
+        private async Task SendFinalizeWarnings(List<Order> singleOrders)
         {
             UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
             List<ApplicationUser> recipients = new List<ApplicationUser>();
@@ -183,10 +183,10 @@ namespace FoodCourt.Controllers
                 });
             }
 
-            Postman.Send("OrderWarning", recipients.Select(u => u.Email).ToList(), emailDtos);
+            await Postman.Send("OrderWarning", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
 
-        private void SendNotifications(List<OrderBasket> baskets, List<ApplicationUser> users)
+        private async Task SendNotifications(List<OrderBasket> baskets, List<ApplicationUser> users)
         {
             UrlHelper urlHelper = new UrlHelper(ControllerContext.RequestContext);
             List<ApplicationUser> recipients = users;
@@ -202,7 +202,7 @@ namespace FoodCourt.Controllers
                 });
             }
 
-            Postman.Send("OrderNotification", recipients.Select(u => u.Email).ToList(), emailDtos);
+            await Postman.Send("OrderNotification", recipients.Select(u => u.Email).ToList(), emailDtos);
         }
 
         private IQueryable<PollViewModel> GetViewModelQuery(IQueryable<Poll> query)

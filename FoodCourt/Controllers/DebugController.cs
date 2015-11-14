@@ -10,6 +10,7 @@ using FoodCourt.Model.Identity;
 using FoodCourt.Service;
 using FoodCourt.ViewModel;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Routing;
 using FoodCourt.Lib;
@@ -27,7 +28,7 @@ namespace FoodCourt.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public ActionResult EmailTester(EmailTesterViewModel viewModel)
+        public async Task<ActionResult> EmailTester(EmailTesterViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -40,7 +41,7 @@ namespace FoodCourt.Controllers
                     PasswordSetUrl = "http://google.com",
                     PollUrl = "http://google.com"
                 };
-                Postman.Send(viewModel.Kind, new List<string>() { viewModel.Email }, new List<EmailDTO>() { emailDto });
+                await Postman.Send(viewModel.Kind, new List<string>() { viewModel.Email }, new List<EmailDTO>() { emailDto });
             }
 
             ViewBag.IsSent = true;

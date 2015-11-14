@@ -48,7 +48,7 @@ namespace FoodCourt.Service
             _templatesPath = emailTemplatePath;
         }
 
-        public void Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
+        public async Task Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
         {
             if (recipients.Count() != emailDtos.Count())
             {
@@ -61,7 +61,7 @@ namespace FoodCourt.Service
             var recipientsCnt = recipients.Count();
             for (int i = 0; i < recipientsCnt; i++)
             {
-                SendSingleMessage(
+               await SendSingleMessage(
                         recipients.ElementAt(i),
                         subject,
                         messages.ElementAt(i)

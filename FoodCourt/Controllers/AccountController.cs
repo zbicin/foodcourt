@@ -232,7 +232,7 @@ namespace FoodCourt.Controllers
             }
         }
 
-        private void SendInvites(List<ApplicationUser> recipients)
+        private async Task SendInvites(List<ApplicationUser> recipients)
         {
             UrlHelper urlHelper = new UrlHelper(this.ControllerContext.RequestContext);
 
@@ -248,7 +248,7 @@ namespace FoodCourt.Controllers
                 });
             }
 
-            Postman.Send("Invite", recipients.Select(r => r.Email).ToList(), emailDtos);
+            await Postman.Send("Invite", recipients.Select(r => r.Email).ToList(), emailDtos);
         }
 
         //
