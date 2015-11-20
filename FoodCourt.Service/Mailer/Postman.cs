@@ -32,7 +32,7 @@ namespace FoodCourt.Service
             {
                 if (_transport == null)
                 {
-                    _transport = new Web(_apiKey); 
+                    _transport = new Web(_apiKey);
                 }
 
                 return _transport;
@@ -61,7 +61,7 @@ namespace FoodCourt.Service
             var recipientsCnt = recipients.Count();
             for (int i = 0; i < recipientsCnt; i++)
             {
-               await SendSingleMessage(
+                await SendSingleMessage(
                         recipients.ElementAt(i),
                         subject,
                         messages.ElementAt(i)
@@ -99,16 +99,9 @@ namespace FoodCourt.Service
 
             foreach (EmailDTO emailDto in emailDtos)
             {
-                try
-                {
-                    string parsedTemplate = Engine.Razor.RunCompile(template, kind + DateTime.Now.Ticks,
-                        typeof (EmailDTO), emailDto);
-                    parsedTemplates.Add(parsedTemplate);
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                string parsedTemplate = Engine.Razor.RunCompile(template, kind + DateTime.Now.Ticks,
+                    typeof(EmailDTO), emailDto);
+                parsedTemplates.Add(parsedTemplate);
             }
 
             return parsedTemplates;
