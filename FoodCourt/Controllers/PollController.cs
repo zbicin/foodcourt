@@ -78,14 +78,14 @@ namespace FoodCourt.Controllers
 
         public async Task<ActionResult> Finish()
         {
-            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "Orders.Dish.Kind, Orders.Dish.Restaurant, Orders.CreatedBy, CreatedBy").SingleAsync();
+            Poll poll = await UnitOfWork.PollRepository.GetCurrentForGroup(CurrentGroup, "CreatedBy").SingleAsync();
 
             if (poll.CreatedBy.Id != CurrentUser.Id)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Unauthorized, "Unauthorized");
             }
 
-            List<Order> orders = poll.Orders.ToList();
+            List<Order> orders = UnitOfWork.OrderRepository.GetForPoll(poll).ToList();
             List<OrderBasket> matches = new List<OrderBasket>();
 
             if (orders.Count > 0)
