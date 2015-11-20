@@ -106,7 +106,7 @@ namespace FoodCourt.Controllers
 
                 // to prevent "holding up" the poll, second attempt is always resolving it
                 poll.IsResolved = true;
-                await ProcessResolvedPoll(poll, matches);
+                await ProcessResolvedPoll(orders, matches);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace FoodCourt.Controllers
 
                 if (poll.IsResolved)
                 {
-                    await ProcessResolvedPoll(poll, matches);
+                    await ProcessResolvedPoll(orders, matches);
                 }
                 else
                 {
@@ -145,9 +145,9 @@ namespace FoodCourt.Controllers
             });
         }
 
-        private async Task ProcessResolvedPoll(Poll poll, List<OrderBasket> matches)
+        private async Task ProcessResolvedPoll(List<Order> orders, List<OrderBasket> matches)
         {
-            var users = poll.Orders.Select(o => o.CreatedBy).Distinct().ToList();
+            var users = orders.Select(o => o.CreatedBy).Distinct().ToList();
             await SendNotifications(matches, users);
             await UpdateLastOrderDates(matches);
         }
