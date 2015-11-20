@@ -22,7 +22,7 @@
                 {
                     <li>
                         &quot;@order.Dish.Name&quot; for @order.CreatedBy.UserName
-                        @if (basket.Captain.Id == order.CreatedBy.Id)
+                        @if (basket.Captain != null && basket.Captain.Id == order.CreatedBy.Id)
                         {
                             @("- captain")
                         }
