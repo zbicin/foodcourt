@@ -100,7 +100,7 @@ namespace FoodCourt.Service
             foreach (EmailDTO emailDto in emailDtos)
             {
                 string parsedTemplate = Engine.Razor.RunCompile(template, kind + DateTime.Now.Ticks,
-                    typeof(EmailDTO), emailDto);
+                    emailDto.GetType(), emailDto);
                 parsedTemplates.Add(parsedTemplate);
             }
 
