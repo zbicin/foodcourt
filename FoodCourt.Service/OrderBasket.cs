@@ -28,6 +28,11 @@ namespace FoodCourt.Service
         {
             get
             {
+                if (IsNotMatched)
+                {
+                    return "Not matched";
+                }
+                
                 if (MatchedOrders.Any())
                 {
                     return MatchedOrders.First().Dish.Restaurant.Name;
