@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.UI.WebControls;
 using FoodCourt.Controllers.Base;
 using FoodCourt.Lib;
@@ -179,7 +180,7 @@ namespace FoodCourt.Controllers
 
                 emailDtos.Add(new EmailDTO()
                 {
-                    PollUrl = urlHelper.Action("Index", "Poll")
+                    PollUrl = urlHelper.Action("Index", "Poll", new {}, ControllerContext.RequestContext.HttpContext.Request.Url.Scheme)
                 });
             }
 
@@ -197,7 +198,7 @@ namespace FoodCourt.Controllers
                 emailDtos.Add(new EmailDTO()
                 {
                     RecipientName = recipients[i].Email,
-                    PollUrl = urlHelper.Action("Index", "Poll"),
+                    PollUrl = urlHelper.Action("Index", "Poll", new { }, ControllerContext.RequestContext.HttpContext.Request.Url.Scheme),
                     Baskets = baskets
                 });
             }
