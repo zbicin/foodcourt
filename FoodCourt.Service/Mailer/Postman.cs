@@ -96,12 +96,15 @@ namespace FoodCourt.Service
         {
             string template = RetrieveEmailTemplate(kind);
             List<string> parsedTemplates = new List<string>();
-
+            
             foreach (EmailDTO emailDto in emailDtos)
             {
-                string parsedTemplate = Engine.Razor.RunCompile(template, kind + DateTime.Now.Ticks,
-                    emailDto.GetType(), emailDto);
-                parsedTemplates.Add(parsedTemplate);
+                using (var service = RazorEngineService.Create())
+                {
+                    string parsedTemplate = service.RunCompile(template, kind + DateTime.Now.Ticks,
+                        emailDto.GetType(), emailDto);
+                    parsedTemplates.Add(parsedTemplate);
+                }
             }
 
             return parsedTemplates;
