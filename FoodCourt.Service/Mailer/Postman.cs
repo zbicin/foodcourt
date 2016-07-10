@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using FoodCourt.Service.Mailer;
+using FoodCourt.Service.Mailer.Templaters;
 using RazorEngine;
 using RazorEngine.Templating;
 using SendGrid;
@@ -39,13 +40,13 @@ namespace FoodCourt.Service
             }
         }
 
-        private readonly string _templatesPath;
+        private readonly IMessageTemplater _messageTemplater;
 
         public Postman(string emailTemplatePath)
         {
             _apiKey = ConfigurationManager.AppSettings[SendgridApiKey] as string;
             _sender = ConfigurationManager.AppSettings[SendgridSender] as string;
-            _templatesPath = emailTemplatePath;
+            _messageTemplater = new RazorMessageTemplater(emailTemplatePath);
         }
 
         public async Task Send(string kind, List<string> recipients, List<EmailDTO> emailDtos)
@@ -56,7 +57,7 @@ namespace FoodCourt.Service
             }
 
             string subject = RetrieveEmailSubject(kind);
-            List<string> messages = ParseEmailTemplates(kind, emailDtos);
+            List<string> messages = _messageTemplater.ParseEmailTemplates(kind, emailDtos);
 
             var recipientsCnt = recipients.Count();
             for (int i = 0; i < recipientsCnt; i++)
@@ -90,44 +91,6 @@ namespace FoodCourt.Service
         private string RetrieveEmailSubject(string kind)
         {
             return ConfigurationManager.AppSettings["EmailTemplate" + kind] as string;
-        }
-
-        private List<string> ParseEmailTemplates(string kind, List<EmailDTO> emailDtos)
-        {
-            string template = RetrieveEmailTemplate(kind);
-            List<string> parsedTemplates = new List<string>();
-            
-            foreach (EmailDTO emailDto in emailDtos)
-            {
-                using (var service = RazorEngineService.Create())
-                {
-                    string parsedTemplate = service.RunCompile(template, kind + DateTime.Now.Ticks,
-                        emailDto.GetType(), emailDto);
-                    parsedTemplates.Add(parsedTemplate);
-                }
-            }
-
-            return parsedTemplates;
-        }
-
-        private string RetrieveEmailTemplate(string kind)
-        {
-            var templateStringBuilder = new StringBuilder();
-            var fullTemplatePath = _templatesPath + "/" + kind + ".cshtml";
-
-            using (StreamReader reader = new StreamReader(fullTemplatePath))
-            {
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    if (line != null && !line.StartsWith("@model"))
-                    {
-                        templateStringBuilder.AppendLine(line);
-                    }
-                }
-            }
-
-            return templateStringBuilder.ToString();
         }
     }
 }

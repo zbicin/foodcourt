@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasketBalanceRankElement.cs" />
+    <Compile Include="Mailer\Templaters\IMessageTemplater.cs" />
+    <Compile Include="Mailer\Templaters\RazorMessageTemplater.cs" />
+    <Compile Include="Mailer\Templaters\SimpleMessageTemplater.cs" />
     <Compile Include="Repository\IDishRepository.cs" />
     <Compile Include="Repository\IGroupRepository.cs" />
     <Compile Include="Repository\IKindRepository.cs" />
